@@ -1,8 +1,9 @@
 from flask import Flask, render_template, jsonify
 import random
+import os
 from collections import defaultdict
 
-app = Flask(__name__)
+app = Flask(__name__, template_folder='../frontend', static_folder='../frontend')
 
 def parse_retete(file_path):
     """Parsează fișierul RETETE.txt și extrage rețetele."""
@@ -81,7 +82,7 @@ def index():
 
 @app.route('/api/menu')
 def get_menu():
-    retete = parse_retete('RETETE.txt')
+    retete = parse_retete('../data/RETETE.txt')
     menu = generate_weekly_menu(retete)
     return jsonify(menu)
 

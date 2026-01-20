@@ -208,9 +208,15 @@
     </div>
 
     <script>
-        function searchRecipe(recipeName) {
-            const searchUrl = `https://www.ecosia.org/search?q=cum+se+face+${encodeURIComponent(recipeName)}+reteta`;
-            window.open(searchUrl, '_blank');
+        function searchRecipe(recipeName, recipeUrl) {
+            // Dacă rețeta are URL personalizat, deschide-l direct
+            if (recipeUrl) {
+                window.open(recipeUrl, '_blank');
+            } else {
+                // Altfel, cauta pe Ecosia
+                const searchUrl = `https://www.ecosia.org/search?q=cum+se+face+${encodeURIComponent(recipeName)}+reteta`;
+                window.open(searchUrl, '_blank');
+            }
         }
 
         async function generateMenu() {
@@ -225,7 +231,7 @@
             menuContainer.classList.remove('active');
 
             try {
-                const response = await fetch('/.netlify/functions/menu');
+                const response = await fetch('/api/menu');
                 const menu = await response.json();
 
                 // Build menu HTML
@@ -235,11 +241,15 @@
                     const isToday = day === 1;
                     const dayLabel = isToday ? '📅 AZI (Ziua 1)' : `📅 Ziua ${day}`;
                     
+                    // Extrage doar numele rețetei (backend returnează string, nu obiect)
+                    const recipeName = typeof recipe === 'string' ? recipe : recipe.name || recipe;
+                    const recipeUrl = typeof recipe === 'object' ? recipe.url : null;
+                    
                     menuHTML += `
                         <div class="day-card ${isToday ? 'today' : ''}">
                             <div class="day-number">${dayLabel}</div>
-                            <div class="recipe-name" onclick="searchRecipe('${recipe}')">
-                                ${recipe}
+                            <div class="recipe-name" onclick="searchRecipe('${recipeName}', ${recipeUrl ? `'${recipeUrl}'` : 'null'})">
+                                ${recipeName}
                                 <span class="search-icon">🔍</span>
                             </div>
                         </div>

@@ -11,7 +11,8 @@ const retetele = [
     { Nume: 'Pui cu smântână și ciuperci', Ingrediente: ['pui', 'ciuperci', 'smântână light', 'ceapă', 'usturoi'], Proteina: 'carne de pasare' },
     { Nume: 'Chilly con carne cu orez', Ingrediente: ['carne de vită', 'fasole boabe', 'ceapă', 'roșii', 'usturoi', 'ardei', 'orez'], Proteina: 'carne roșie' },
     { Nume: 'Creamy meatballs (chiftele în sos)', Ingrediente: ['carne tocată vită', 'grâu', 'mazare', 'ceapă', 'usturoi'], Proteina: 'carne roșie' },
-    { Nume: 'Couscous cu piept de pui și legume', Ingrediente: ['piept de pui', 'dovlecel', 'ardei gras', 'couscous'], Proteina: 'carne de pasare' }
+    { Nume: 'Couscous cu piept de pui și legume', Ingrediente: ['piept de pui', 'dovlecel', 'ardei gras', 'couscous'], Proteina: 'carne de pasare' },
+    { Nume: 'Supă cremă dovleac', Ingrediente: ['dovleac', 'smântână', 'brânză', 'usturoi', 'ceapă'], Proteina: 'legume uscate', Url: 'https://pofta-buna.com/supa-crema-de-dovleac-reteta-simpla-clasica-rapida/' }
 ];
 
 function parseRetete(content) {

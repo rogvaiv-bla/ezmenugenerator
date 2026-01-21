@@ -107,11 +107,16 @@
             padding: 25px;
             box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
         }
 
         .day-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .day-card.show-ingredients {
+            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
         }
 
         .day-card.today {
@@ -161,6 +166,61 @@
             font-size: 0.9em;
         }
 
+        .ingredients-container {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid rgba(0, 0, 0, 0.1);
+        }
+
+        .ingredients-container.active {
+            display: block;
+            animation: slideDown 0.3s ease-in;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                max-height: 0;
+            }
+            to {
+                opacity: 1;
+                max-height: 500px;
+            }
+        }
+
+        .ingredients-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 10px;
+        }
+
+        .day-card.show-ingredients .ingredients-title {
+            color: #2e7d32;
+        }
+
+        .ingredients-list {
+            list-style: none;
+            padding-left: 0;
+        }
+
+        .ingredients-list li {
+            font-size: 0.95em;
+            color: #555;
+            padding: 5px 0;
+            padding-left: 20px;
+            position: relative;
+        }
+
+        .ingredients-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2e7d32;
+            font-weight: bold;
+        }
+
         .loading {
             text-align: center;
             font-size: 1.1em;
@@ -208,7 +268,12 @@
     </div>
 
     <script>
-        function searchRecipe(recipeName, recipeUrl) {
+        let recipesData = {}; // Stochează date rețete cu ingrediente
+
+        function searchRecipe(event, recipeName, recipeUrl) {
+            // Oprește propagarea evenimentului către parent (day-card)
+            event.stopPropagation();
+            
             // Dacă rețeta are URL personalizat, deschide-l direct
             if (recipeUrl) {
                 window.open(recipeUrl, '_blank');
@@ -217,6 +282,16 @@
                 const searchUrl = `https://www.ecosia.org/search?q=cum+se+face+${encodeURIComponent(recipeName)}+reteta`;
                 window.open(searchUrl, '_blank');
             }
+        }
+
+        function toggleIngredients(event, dayNumber) {
+            // Găsește card-ul din care provine event-ul
+            const card = event.currentTarget;
+            const ingredientsContainer = card.querySelector('.ingredients-container');
+            
+            // Toggle ingredientsul și culoarea card-ului
+            ingredientsContainer.classList.toggle('active');
+            card.classList.toggle('show-ingredients');
         }
 
         async function generateMenu() {
@@ -233,6 +308,16 @@
             try {
                 const response = await fetch('/api/menu');
                 const menu = await response.json();
+                
+                // Fetch recipes with ingredients
+                const recipesResponse = await fetch('/api/recipes');
+                const recipes = await recipesResponse.json();
+                
+                // Creează map pentru ușor acces la ingrediente
+                recipesData = {};
+                recipes.forEach(recipe => {
+                    recipesData[recipe.Nume] = recipe.Ingrediente;
+                });
 
                 // Build menu HTML
                 let menuHTML = '';
@@ -241,16 +326,26 @@
                     const isToday = day === 1;
                     const dayLabel = isToday ? '📅 AZI (Ziua 1)' : `📅 Ziua ${day}`;
                     
-                    // Extrage doar numele rețetei (backend returnează string, nu obiect)
+                    // Extrage doar numele rețetei
                     const recipeName = typeof recipe === 'string' ? recipe : recipe.name || recipe;
                     const recipeUrl = typeof recipe === 'object' ? recipe.url : null;
                     
+                    // Obține ingredientele pentru rețeta
+                    const ingredients = recipesData[recipeName] || [];
+                    const ingredientsHTML = ingredients.length > 0 
+                        ? `<ul class="ingredients-list">${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>`
+                        : '<p style="color: #999; font-size: 0.9em;">Nicio ingredientă disponibilă</p>';
+                    
                     menuHTML += `
-                        <div class="day-card ${isToday ? 'today' : ''}">
+                        <div class="day-card ${isToday ? 'today' : ''}" onclick="toggleIngredients(event, ${day})">
                             <div class="day-number">${dayLabel}</div>
-                            <div class="recipe-name" onclick="searchRecipe('${recipeName}', ${recipeUrl ? `'${recipeUrl}'` : 'null'})">
+                            <div class="recipe-name" onclick="searchRecipe(event, '${recipeName}', ${recipeUrl ? `'${recipeUrl}'` : 'null'})">
                                 ${recipeName}
                                 <span class="search-icon">🔍</span>
+                            </div>
+                            <div class="ingredients-container">
+                                <div class="ingredients-title">📦 Ingrediente:</div>
+                                ${ingredientsHTML}
                             </div>
                         </div>
                     `;

@@ -86,5 +86,11 @@ def get_menu():
     menu = generate_weekly_menu(retete)
     return jsonify(menu)
 
+@app.route('/api/recipes')
+def get_recipes():
+    """Returnează lista cu toate rețetele și ingredientele lor."""
+    retete = parse_retete('../data/RETETE.txt')
+    return jsonify(retete)
+
 if __name__ == '__main__':
     app.run(debug=True, port=8000)

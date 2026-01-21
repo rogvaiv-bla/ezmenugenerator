@@ -18,6 +18,7 @@
 
 - [Overview](#overview)
 - [Why ezmenugenerator?](#why-ezmenugenerator)
+- [Live Demo](#live-demo)
 - [Getting Started](#getting-started)
   - [Prerequisites](#prerequisites)
   - [Installation](#installation)
@@ -37,6 +38,10 @@ This project helps developers build flexible, dietary-aware menu systems with ea
 - 🎯 **Customizable Menu Generation**: Creates diverse, non-repetitive weekly menus respecting dietary restrictions
 - 🔍 **Interactive UI**: Provides web interfaces for real-time menu updates and recipe searches
 - 🍽️ **Recipe Management**: Parses recipe data and enforces ingredient frequency limits for balanced meal planning
+
+## Live Demo
+
+🌐 Check out the live application: **https://ezmenugenerator.netlify.app**
 
 ## Getting Started
 

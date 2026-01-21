@@ -1,5 +1,9 @@
 "use strict";
 
+var fs = require('fs');
+
+var path = require('path');
+
 var retetele = [{
   Nume: 'Pui copt cu cartofi la cuptor și legume',
   Ingrediente: ['🍗 pui', '🥔 cartofi', '🥕 morcovi', '🥦 broccoli', '🫒 ulei', '🧄 usturoi'],
@@ -43,40 +47,96 @@ var retetele = [{
 }, {
   Nume: 'Supă cremă dovleac',
   Ingrediente: ['🎃 dovleac', '🥛 smântână', '🧀 brânză', '🧄 usturoi', '🧅 ceapă'],
-  Proteina: 'legume uscate'
+  Proteina: 'legume uscate',
+  Url: 'https://pofta-buna.com/supa-crema-de-dovleac-reteta-simpla-clasica-rapida/'
 }];
 
+function parseRetete(content) {
+  return retetele;
+}
+
+function generateWeeklyMenu(retete) {
+  var freqLimits = {
+    'carne roșie': 1,
+    'carne de pasare': 2,
+    'pește': 2,
+    'ouă': 5,
+    'mezeluri': 0.5,
+    'legume uscate': 2
+  };
+  var counters = {};
+  var menu = {};
+  var usedRecipes = new Set();
+
+  for (var day = 1; day <= 7; day++) {
+    var available = retete.filter(function (r) {
+      return !usedRecipes.has(r.Nume) && canUseRecipe(r, counters, freqLimits);
+    });
+
+    if (available.length === 0) {
+      menu[day] = 'Nicio rețetă disponibilă';
+      continue;
+    }
+
+    var recipe = available[Math.floor(Math.random() * available.length)];
+    menu[day] = recipe.Nume;
+    usedRecipes.add(recipe.Nume);
+    var prot = recipe.Proteina.toLowerCase();
+
+    if (prot in freqLimits) {
+      counters[prot] = (counters[prot] || 0) + 1;
+    }
+  }
+
+  return menu;
+}
+
+function canUseRecipe(recipe, counters, freqLimits) {
+  var prot = recipe.Proteina.toLowerCase();
+
+  if (prot in freqLimits) {
+    if ((counters[prot] || 0) >= freqLimits[prot]) {
+      return false;
+    }
+  }
+
+  return true;
+}
+
 exports.handler = function _callee(event, context) {
+  var retete, menu;
   return regeneratorRuntime.async(function _callee$(_context) {
     while (1) {
       switch (_context.prev = _context.next) {
         case 0:
           _context.prev = 0;
+          retete = parseRetete();
+          menu = generateWeeklyMenu(retete);
           return _context.abrupt("return", {
             statusCode: 200,
             headers: {
               'Content-Type': 'application/json',
               'Access-Control-Allow-Origin': '*'
             },
-            body: JSON.stringify(retetele)
+            body: JSON.stringify(menu)
           });
 
-        case 4:
-          _context.prev = 4;
+        case 6:
+          _context.prev = 6;
           _context.t0 = _context["catch"](0);
           console.error('Error:', _context.t0);
           return _context.abrupt("return", {
             statusCode: 500,
             body: JSON.stringify({
-              error: 'Error fetching recipes',
+              error: 'Error generating menu',
               details: _context.t0.message
             })
           });
 
-        case 8:
+        case 10:
         case "end":
           return _context.stop();
       }
     }
-  }, null, null, [[0, 4]]);
+  }, null, null, [[0, 6]]);
 };

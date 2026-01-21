@@ -306,11 +306,11 @@
             menuContainer.classList.remove('active');
 
             try {
-                const response = await fetch('/.netlify/functions/menu');
+                const response = await fetch('/api/menu');
                 const menu = await response.json();
                 
                 // Fetch recipes with ingredients
-                const recipesResponse = await fetch('/.netlify/functions/recipes');
+                const recipesResponse = await fetch('/api/recipes');
                 const recipes = await recipesResponse.json();
                 
                 // Creează map pentru ușor acces la ingrediente

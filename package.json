@@ -3,5 +3,12 @@
   "version": "1.0.0",
   "description": "Weekly menu generator with restrictions",
   "main": "index.js",
-  "dependencies": {}
+  "scripts": {
+    "build": "echo 'Build complete'",
+    "dev": "vercel dev"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "latest"
+  }
 }

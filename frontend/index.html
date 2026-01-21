@@ -95,109 +95,135 @@
         }
 
         .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
             margin-top: 30px;
         }
 
         .day-card {
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 15px;
-            padding: 25px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             cursor: pointer;
+            border: 2px solid transparent;
         }
 
         .day-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
         }
 
         .day-card.show-ingredients {
-            background: linear-gradient(135deg, #e8f5e9 0%, #c8e6c9 100%);
+            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
+            border-color: #81c784;
+            padding: 24px;
+            box-shadow: 0 8px 24px rgba(129, 199, 132, 0.2);
         }
 
         .day-card.today {
-            background: linear-gradient(135deg, #ffd89b 0%, #19547b 100%);
-            box-shadow: 0 10px 30px rgba(255, 216, 155, 0.4);
+            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
+            border-color: #ffb74d;
+        }
+
+        .day-card.today:hover {
+            box-shadow: 0 4px 12px rgba(255, 179, 71, 0.2);
+        }
+
+        .day-card.today.show-ingredients {
+            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
+            border-color: #fbc02d;
+            box-shadow: 0 8px 24px rgba(251, 192, 45, 0.2);
         }
 
         .day-number {
-            font-size: 0.9em;
-            color: #666;
-            font-weight: 600;
+            font-size: 0.85em;
+            color: #5a6c7d;
+            font-weight: 700;
             text-transform: uppercase;
-            margin-bottom: 10px;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
         }
 
         .day-card.today .day-number {
-            color: white;
-            opacity: 0.9;
+            color: #d84315;
         }
 
         .recipe-name {
-            font-size: 1.3em;
-            color: #333;
+            font-size: 1.25em;
+            color: #1a237e;
             font-weight: 700;
-            line-height: 1.4;
+            line-height: 1.5;
             cursor: pointer;
-            transition: color 0.3s, text-decoration 0.3s;
-            text-decoration: underline dashed transparent;
+            transition: all 0.2s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
         }
 
         .recipe-name:hover {
-            text-decoration: underline dashed #333;
-            opacity: 0.8;
+            color: #0d47a1;
         }
 
         .day-card.today .recipe-name {
-            color: white;
+            color: #d84315;
         }
 
         .day-card.today .recipe-name:hover {
-            text-decoration: underline dashed white;
+            color: #bf360c;
         }
 
         .search-icon {
             display: inline-block;
             margin-left: 8px;
-            font-size: 0.9em;
+            font-size: 1.1em;
+            opacity: 0.7;
+            transition: opacity 0.2s;
+        }
+
+        .recipe-name:hover .search-icon {
+            opacity: 1;
         }
 
         .ingredients-container {
             display: none;
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 2px solid rgba(0, 0, 0, 0.1);
+            margin-top: 16px;
+            padding-top: 16px;
+            border-top: 2px solid rgba(0, 0, 0, 0.08);
         }
 
         .ingredients-container.active {
             display: block;
-            animation: slideDown 0.3s ease-in;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
 
         @keyframes slideDown {
             from {
                 opacity: 0;
+                transform: translateY(-8px);
                 max-height: 0;
             }
             to {
                 opacity: 1;
-                max-height: 500px;
+                transform: translateY(0);
+                max-height: 800px;
             }
         }
 
         .ingredients-title {
-            font-size: 1.1em;
-            font-weight: 600;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 1em;
+            font-weight: 700;
+            color: #2e7d32;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            font-size: 0.95em;
+            letter-spacing: 0.3px;
         }
 
-        .day-card.show-ingredients .ingredients-title {
-            color: #2e7d32;
+        .day-card.today .ingredients-title {
+            color: #d84315;
         }
 
         .ingredients-list {
@@ -207,18 +233,25 @@
 
         .ingredients-list li {
             font-size: 0.95em;
-            color: #555;
-            padding: 5px 0;
-            padding-left: 20px;
+            color: #37474f;
+            padding: 8px 0;
+            padding-left: 24px;
             position: relative;
+            font-weight: 500;
+            line-height: 1.4;
         }
 
         .ingredients-list li:before {
             content: "✓";
             position: absolute;
-            left: 0;
+            left: 4px;
             color: #2e7d32;
-            font-weight: bold;
+            font-weight: 700;
+            font-size: 1.1em;
+        }
+
+        .day-card.today .ingredients-list li:before {
+            color: #d84315;
         }
 
         .loading {
@@ -238,11 +271,23 @@
             }
 
             .menu-grid {
-                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .day-card {
+                padding: 16px;
+            }
+
+            .day-card.show-ingredients {
+                padding: 20px;
             }
 
             .container {
-                padding: 25px;
+                padding: 20px;
+            }
+
+            .recipe-name {
+                font-size: 1.1em;
             }
         }
     </style>
@@ -268,30 +313,42 @@
     </div>
 
     <script>
-        let recipesData = {}; // Stochează date rețete cu ingrediente
+        let recipesData = {}; 
+        let expandedCard = null;
 
         function searchRecipe(event, recipeName, recipeUrl) {
-            // Oprește propagarea evenimentului către parent (day-card)
             event.stopPropagation();
             
-            // Dacă rețeta are URL personalizat, deschide-l direct
             if (recipeUrl) {
                 window.open(recipeUrl, '_blank');
             } else {
-                // Altfel, cauta pe Ecosia
                 const searchUrl = `https://www.ecosia.org/search?q=cum+se+face+${encodeURIComponent(recipeName)}+reteta`;
                 window.open(searchUrl, '_blank');
             }
         }
 
         function toggleIngredients(event, dayNumber) {
-            // Găsește card-ul din care provine event-ul
             const card = event.currentTarget;
             const ingredientsContainer = card.querySelector('.ingredients-container');
             
-            // Toggle ingredientsul și culoarea card-ului
-            ingredientsContainer.classList.toggle('active');
-            card.classList.toggle('show-ingredients');
+            // Dacă cardul era deja expandat, închide-l
+            if (card === expandedCard) {
+                ingredientsContainer.classList.remove('active');
+                card.classList.remove('show-ingredients');
+                expandedCard = null;
+            } else {
+                // Închide cardul anterior dacă există
+                if (expandedCard) {
+                    const prevContainer = expandedCard.querySelector('.ingredients-container');
+                    prevContainer.classList.remove('active');
+                    expandedCard.classList.remove('show-ingredients');
+                }
+                
+                // Expandează noul card
+                ingredientsContainer.classList.add('active');
+                card.classList.add('show-ingredients');
+                expandedCard = card;
+            }
         }
 
         async function generateMenu() {
@@ -300,37 +357,32 @@
             const menuGrid = document.getElementById('menuGrid');
             const generateBtn = document.getElementById('generateBtn');
 
-            // Show loading
             loading.classList.add('active');
             generateBtn.disabled = true;
             menuContainer.classList.remove('active');
+            expandedCard = null;
 
             try {
                 const response = await fetch('/api/menu');
                 const menu = await response.json();
                 
-                // Fetch recipes with ingredients
                 const recipesResponse = await fetch('/api/recipes');
                 const recipes = await recipesResponse.json();
                 
-                // Creează map pentru ușor acces la ingrediente
                 recipesData = {};
                 recipes.forEach(recipe => {
                     recipesData[recipe.Nume] = recipe.Ingrediente;
                 });
 
-                // Build menu HTML
                 let menuHTML = '';
                 for (let day = 1; day <= 7; day++) {
                     const recipe = menu[day] || 'N/A';
                     const isToday = day === 1;
-                    const dayLabel = isToday ? '📅 AZI (Ziua 1)' : `📅 Ziua ${day}`;
+                    const dayLabel = isToday ? '📅 AZI' : `📅 Ziua ${day}`;
                     
-                    // Extrage doar numele rețetei
                     const recipeName = typeof recipe === 'string' ? recipe : recipe.name || recipe;
                     const recipeUrl = typeof recipe === 'object' ? recipe.url : null;
                     
-                    // Obține ingredientele pentru rețeta
                     const ingredients = recipesData[recipeName] || [];
                     const ingredientsHTML = ingredients.length > 0 
                         ? `<ul class="ingredients-list">${ingredients.map(ing => `<li>${ing}</li>`).join('')}</ul>`
@@ -340,7 +392,7 @@
                         <div class="day-card ${isToday ? 'today' : ''}" onclick="toggleIngredients(event, ${day})">
                             <div class="day-number">${dayLabel}</div>
                             <div class="recipe-name" onclick="searchRecipe(event, '${recipeName}', ${recipeUrl ? `'${recipeUrl}'` : 'null'})">
-                                ${recipeName}
+                                <span>${recipeName}</span>
                                 <span class="search-icon">🔍</span>
                             </div>
                             <div class="ingredients-container">
@@ -355,7 +407,7 @@
                 menuContainer.classList.add('active');
             } catch (error) {
                 console.error('Eroare:', error);
-                menuGrid.innerHTML = '<p>Eroare la generarea meniului. Încearcă din nou!</p>';
+                menuGrid.innerHTML = '<p style="color: #d84315; text-align: center; padding: 20px;">❌ Eroare la generarea meniului. Încearcă din nou!</p>';
                 menuContainer.classList.add('active');
             } finally {
                 loading.classList.remove('active');
@@ -363,7 +415,6 @@
             }
         }
 
-        // Auto-generate menu on page load
         window.addEventListener('load', function() {
             generateMenu();
         });

@@ -1,95 +1,105 @@
-# EZMENUGENERATOR
+# 🍽️ EZMENUGENERATOR
 
 **Transforming Menus, Elevating Dining Experiences Instantly**
 
-[![Last Commit](https://img.shields.io/badge/repo-active-brightgreen)]()
-[![Top Language](https://img.shields.io/badge/language-Python-blue)]()
-[![Languages](https://img.shields.io/badge/languages-7-brightgreen)]()
+[![Vercel Deployed](https://img.shields.io/badge/deployed%20on-Vercel-000000?logo=vercel)]()
+[![Live](https://img.shields.io/badge/status-live-brightgreen)]()
+[![Language](https://img.shields.io/badge/language-JavaScript-F7DF1E?logo=javascript)]()
 
 **Built with:**
-![JSON](https://img.shields.io/badge/JSON-000?logo=json)
-![Markdown](https://img.shields.io/badge/Markdown-000?logo=markdown)
-![npm](https://img.shields.io/badge/npm-CB3837?logo=npm&logoColor=white)
-![TOML](https://img.shields.io/badge/TOML-000?logo=toml)
+![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
-![Python](https://img.shields.io/badge/Python-3776AB?logo=python&logoColor=white)
+![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
+![HTML5](https://img.shields.io/badge/HTML5-E34C26?logo=html5&logoColor=white)
+![CSS3](https://img.shields.io/badge/CSS3-1572B6?logo=css3&logoColor=white)
 
 ## Table of Contents
 
 - [Overview](#overview)
-- [Why ezmenugenerator?](#why-ezmenugenerator)
+- [Features](#features)
 - [Live Demo](#live-demo)
-- [Getting Started](#getting-started)
-  - [Prerequisites](#prerequisites)
-  - [Installation](#installation)
-- [Usage](#usage)
-- [Testing](#testing)
+- [Quick Start](#quick-start)
+- [Deployment](#deployment)
 
 ## Overview
 
-**ezmenugenerator** is a developer-focused tool that simplifies the creation of dynamic, customizable weekly menus for web applications. It combines backend logic with interactive frontend interfaces, enabling efficient meal planning and recipe management within a serverless architecture.
+**ezmenugenerator** is a modern, serverless menu generation app that creates intelligent weekly meal plans. It respects dietary restrictions and protein frequency limits while providing an interactive UI for discovering recipes.
 
-## Why ezmenugenerator?
+Built with serverless architecture on Vercel for instant global deployment.
 
-This project helps developers build flexible, dietary-aware menu systems with ease. The core features include:
+## Features
 
-- 🧩 **Modular Architecture**: Seamlessly integrates frontend and backend components for a cohesive user experience
-- 🚀 **Serverless Deployment**: Configured for smooth deployment on platforms like Netlify, supporting CI/CD workflows
-- 🎯 **Customizable Menu Generation**: Creates diverse, non-repetitive weekly menus respecting dietary restrictions
-- 🔍 **Interactive UI**: Provides web interfaces for real-time menu updates and recipe searches
-- 🍽️ **Recipe Management**: Parses recipe data and enforces ingredient frequency limits for balanced meal planning
+- 🎯 **Smart Menu Generation**: Random 7-day menus respecting protein frequency limits
+- 🔍 **Recipe Search Integration**: Click to search recipes online
+- 📱 **Responsive Design**: Works perfectly on desktop, tablet, and mobile
+- 🎨 **Beautiful UI**: Clean, modern interface with smooth animations
+- ⚡ **Serverless**: Deployed on Vercel for instant scaling and 99.9% uptime
+- 🌍 **Global CDN**: Fast loading anywhere in the world
+- 📦 **Ingredients List**: View all ingredients for each recipe
 
 ## Live Demo
 
-🌐 Check out the live application: **https://ezmenugenerator.netlify.app**
+🌐 **Live Application**: https://ezmenugenerator.vercel.app
 
-## Getting Started
+## Quick Start
 
-### Prerequisites
-
-This project requires the following dependencies:
-
-- **Programming Language**: Python
-- **Package Manager**: npm
-
-### Installation
-
-Build **ezmenugenerator** from the source and install dependencies:
-
-1. Clone the repository:
+### Local Development
 
 ```bash
-git clone https://github.com/rogvaiv-bla/ezmenugenerator
-```
-
-2. Navigate to the project directory:
-
-```bash
-cd ezmenugenerator
-```
-
-3. Install the dependencies:
-
-```bash
+# Install dependencies
 npm install
+
+# Start local dev server (requires Vercel CLI)
+npm run dev
+
+# Visit http://localhost:3000
 ```
 
-## Usage
+### Deploy to Vercel
 
-Run the project with:
+**Option 1: Via Git (Recommended)**
+1. Push code to GitHub
+2. Visit https://vercel.com
+3. Click "New Project" and import your repository
+4. Deploy!
 
+**Option 2: Via CLI**
 ```bash
-npm start
+npm install -g vercel
+vercel
 ```
 
-## Testing
+## Deployment
 
-Ezmenugenerator uses automated testing. Run the test suite with:
+This project is configured for Vercel deployment:
 
-```bash
-npm test
+- **Configuration**: `vercel.json`
+- **API Routes**: `/api/menu.js` and `/api/recipes.js`
+- **Frontend**: `/frontend/` directory
+- **Auto-deploys**: On every push to main branch
+
+### Project Structure
+
 ```
+.
+├── api/                     # Serverless API functions
+│   ├── menu.js             # Menu generation endpoint
+│   └── recipes.js          # Recipe list endpoint
+├── frontend/               # Static website
+│   └── index.html
+├── data/                   # Data files (recipes, restrictions)
+├── vercel.json            # Vercel configuration
+├── package.json
+└── README.md
+```
+
+## How It Works
+
+1. **Generate Menu**: Click "GENEREAZĂ MENIU" button
+2. **Expand Card**: Click any day to see ingredients
+3. **Search Recipe**: Click recipe name with 🔍 icon
+4. **Save/Share**: Screenshot or bookmark your menu
 
 ---
 
-**Made with ❤️ by the ezmenugenerator team**
+**Made with ❤️ for better meal planning** 🍽️

@@ -382,16 +382,19 @@
             flex-direction: column;
             gap: 10px;
             padding-left: 20px;
-            transition: all 0.3s;
             max-height: 70vh;
             overflow-y: auto;
             overflow-x: hidden;
             padding-right: 8px;
+            transition: opacity 0.2s ease-out;
+            opacity: 1;
         }
 
         .category-items.collapsed {
             max-height: 0;
             opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s ease-out, max-height 0s linear 0.2s;
         }
 
         /* Scrollbar styling for better mobile experience */
@@ -1196,11 +1199,15 @@
         }
 
         let undoStack = []; // Stores recent deletions for undo
+        let undoTimers = {}; // Track timeouts by deletion ID
 
         // Șterge produs cu undo option
         function deleteProduct(category, product) {
+            const deleteId = `${Date.now()}_${Math.random()}`; // Unique ID for this deletion
+            
             // Save to undo stack
             undoStack.push({
+                id: deleteId,
                 category,
                 product,
                 data: shoppingList[category][product],
@@ -1209,7 +1216,9 @@
 
             // Keep only last 10 undo actions
             if (undoStack.length > 10) {
-                undoStack.shift();
+                const removed = undoStack.shift();
+                clearTimeout(undoTimers[removed.id]);
+                delete undoTimers[removed.id];
             }
 
             // Delete from list
@@ -1219,10 +1228,12 @@
             showUndoPopup(category, product);
             
             // Save to server after 5 seconds (if undo not pressed)
-            setTimeout(() => {
-                const lastUndo = undoStack[undoStack.length - 1];
-                if (lastUndo && lastUndo.category === category && lastUndo.product === product) {
+            undoTimers[deleteId] = setTimeout(() => {
+                const undoItem = undoStack.find(u => u.id === deleteId);
+                if (undoItem) {
                     // Undo wasn't pressed, confirm delete
+                    undoStack = undoStack.filter(u => u.id !== deleteId);
+                    delete undoTimers[deleteId];
                     saveShoppingList();
                 }
             }, 5000);
@@ -1261,11 +1272,17 @@
             const undoItem = undoStack.find(u => u.category === category && u.product === product);
             
             if (undoItem) {
+                // Clear the auto-delete timeout
+                if (undoTimers[undoItem.id]) {
+                    clearTimeout(undoTimers[undoItem.id]);
+                    delete undoTimers[undoItem.id];
+                }
+                
                 // Restore item
                 shoppingList[category][product] = undoItem.data;
                 
                 // Remove from undo stack
-                undoStack = undoStack.filter(u => !(u.category === category && u.product === product));
+                undoStack = undoStack.filter(u => u.id !== undoItem.id);
                 
                 console.log(`[UNDO] Restored ${product} in ${category}`);
                 

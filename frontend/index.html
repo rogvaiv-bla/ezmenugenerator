@@ -271,19 +271,22 @@
             gap: 10px;
             margin-bottom: 30px;
             border-bottom: 3px solid #e0e0e0;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 12px 24px;
-            font-size: 1em;
+            padding: 12px 16px;
+            font-size: 0.95em;
             cursor: pointer;
             color: #999;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
             font-weight: 600;
             box-shadow: none;
+            flex: 1;
+            min-width: 150px;
         }
 
         .tab-btn:hover {
@@ -397,11 +400,11 @@
             background: #f8f9fa;
             border-radius: 6px;
             transition: all 0.2s;
+            min-height: 48px;
         }
 
         .item:hover {
             background: #e9ecef;
-            transform: translateX(4px);
         }
 
         .item input[type="checkbox"] {
@@ -409,13 +412,15 @@
             height: 20px;
             cursor: pointer;
             accent-color: #00BCD4;
+            flex-shrink: 0;
         }
 
         .item-name {
             flex: 1;
+            min-width: 0;
             color: #333;
             font-weight: 500;
-            transition: all 0.2s;
+            word-break: break-word;
         }
 
         .item input[type="checkbox"]:checked ~ .item-name {
@@ -426,15 +431,17 @@
         .item-controls {
             display: flex;
             align-items: center;
-            gap: 8px;
+            gap: 4px;
+            flex-shrink: 0;
+            margin-left: auto;
         }
 
         .quantity-btn {
             background: #00BCD4;
             color: white;
             border: none;
-            width: 28px;
-            height: 28px;
+            width: 32px;
+            height: 32px;
             border-radius: 4px;
             cursor: pointer;
             font-size: 1.1em;
@@ -443,30 +450,34 @@
             justify-content: center;
             transition: all 0.2s;
             padding: 0;
+            flex-shrink: 0;
         }
 
         .quantity-btn:hover {
             background: #0097A7;
-            transform: scale(1.1);
+            transform: scale(1.05);
         }
 
         .quantity-display {
-            min-width: 35px;
+            min-width: 32px;
             text-align: center;
             font-weight: 600;
             color: #333;
             font-size: 0.9em;
+            flex-shrink: 0;
         }
 
         .item-delete {
             background: #ff6b6b;
             color: white;
             border: none;
-            padding: 6px 12px;
+            padding: 6px 10px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9em;
+            font-size: 0.85em;
             transition: all 0.2s;
+            flex-shrink: 0;
+            white-space: nowrap;
         }
 
         .item-delete:hover {
@@ -521,34 +532,41 @@
 
         .stats {
             display: flex;
-            gap: 20px;
+            gap: 10px;
             margin-bottom: 20px;
             justify-content: center;
+            flex-wrap: wrap;
         }
 
         .stat {
             text-align: center;
-            padding: 15px 25px;
+            padding: 12px 15px;
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
             color: white;
             border-radius: 8px;
             font-weight: 700;
+            flex: 1;
+            min-width: 120px;
         }
 
         .stat-number {
-            font-size: 1.8em;
+            font-size: 1.5em;
             display: block;
             margin-bottom: 5px;
         }
 
         .stat-label {
-            font-size: 0.85em;
+            font-size: 0.8em;
             opacity: 0.9;
         }
 
         @media (max-width: 768px) {
             .header h1 {
-                font-size: 2em;
+                font-size: 1.8em;
+            }
+
+            .header p {
+                font-size: 0.95em;
             }
 
             .menu-grid {
@@ -564,15 +582,17 @@
             }
 
             .container {
-                padding: 20px;
+                padding: 15px;
             }
 
             .recipe-name {
-                font-size: 1.1em;
+                font-size: 1em;
             }
 
             .add-item-section {
                 flex-direction: column;
+                padding: 15px;
+                gap: 8px;
             }
 
             .add-item-section select {
@@ -584,8 +604,101 @@
             }
 
             .tab-btn {
-                padding: 10px 16px;
-                font-size: 0.9em;
+                padding: 10px 12px;
+                font-size: 0.85em;
+                min-width: 120px;
+            }
+
+            .stats {
+                gap: 8px;
+            }
+
+            .stat {
+                padding: 10px 12px;
+                min-width: 100px;
+            }
+
+            .stat-number {
+                font-size: 1.3em;
+            }
+
+            .stat-label {
+                font-size: 0.75em;
+            }
+
+            .category-items {
+                padding-left: 10px;
+            }
+
+            .item {
+                gap: 8px;
+                padding: 10px;
+                min-height: 44px;
+            }
+
+            .item-controls {
+                gap: 3px;
+            }
+
+            .quantity-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 1em;
+            }
+
+            .item-delete {
+                padding: 4px 8px;
+                font-size: 0.75em;
+            }
+
+            .check-all-btn {
+                padding: 3px 8px;
+                font-size: 0.75em;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .header h1 {
+                font-size: 1.4em;
+            }
+
+            .tab-btn {
+                padding: 8px 10px;
+                font-size: 0.8em;
+                min-width: 100px;
+            }
+
+            .container {
+                padding: 10px;
+            }
+
+            .add-item-section {
+                padding: 12px;
+            }
+
+            .stat {
+                min-width: 80px;
+                padding: 8px 10px;
+            }
+
+            .stat-number {
+                font-size: 1.2em;
+            }
+
+            .item {
+                padding: 8px;
+                gap: 6px;
+            }
+
+            .quantity-btn {
+                width: 26px;
+                height: 26px;
+                font-size: 0.95em;
+            }
+
+            .item-delete {
+                padding: 3px 6px;
+                font-size: 0.7em;
             }
         }
     </style>
@@ -626,6 +739,7 @@
                 </select>
                 <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Fainaă 4 kg)">
                 <button onclick="addProduct()">➕ Adaugă Produs</button>
+                <button onclick="generateShareLink()" style="background: #ff9800; margin-left: 8px;">🔗 Partajează Lista</button>
             </div>
 
             <div class="stats" id="stats-container">
@@ -832,12 +946,24 @@
                     return typeof item === 'object' ? item.checked : item;
                 }).length;
                 const allChecked = checkedCount === itemCount && itemCount > 0;
+                
+                // Separează emoji din categoria
+                let categoryText = category;
+                let emoji = '';
+                const emojiMatch = category.match(/^(.)\s(.+)$/);
+                if (emojiMatch) {
+                    const match = category.match(/^([\p{Emoji_Presentation}]|\p{Extended_Pictographic})+\s(.+)$/u);
+                    if (match) {
+                        emoji = match[1];
+                        categoryText = match[2];
+                    }
+                }
 
                 html += `
                     <div class="category">
                         <div class="category-header" onclick="toggleCategory(event)">
                             <span class="toggle-icon">▶️</span>
-                            <span class="category-name">${category}</span>
+                            <span class="category-name">${categoryText} ${emoji}</span>
                             <span class="category-count">${checkedCount}/${itemCount}</span>
                             <button class="check-all-btn" onclick="toggleCategoryAll(event, '${category}')" style="margin-left: auto;">
                                 ${allChecked ? '✓ Deselectează' : '☐ Selectează'}
@@ -1120,7 +1246,81 @@
             }
         }
 
+        // Generează ID unic pentru partajare
+        function generateShareLink() {
+            const shareId = 'share_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+            const listData = JSON.stringify(shoppingList);
+            localStorage.setItem(shareId, listData);
+            
+            const shareUrl = window.location.origin + window.location.pathname + '?shared=' + shareId;
+            
+            // Copie link-ul
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('Link-ul de partajare a fost copiat în clipboard:\n' + shareUrl);
+            }).catch(() => {
+                prompt('Copiază link-ul de partajare:', shareUrl);
+            });
+        }
+
+        // Încarcă lista partajată
+        function loadSharedList(shareId) {
+            try {
+                const sharedData = localStorage.getItem(shareId);
+                if (sharedData) {
+                    shoppingList = JSON.parse(sharedData);
+                    renderShoppingList();
+                    updateStats();
+                    alert('Lista partajată a fost încărcată cu succes!');
+                }
+            } catch (e) {
+                console.error('Eroare la încărcarea listei partajate:', e);
+            }
+        }
+
+        // Sincronizează cu serverul (pentru viitor)
+        async function syncWithServer() {
+            const sessionId = localStorage.getItem('sessionId') || 'local_' + Date.now();
+            localStorage.setItem('sessionId', sessionId);
+            
+            try {
+                const response = await fetch('/api/shopping-list', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        sessionId: sessionId,
+                        data: shoppingList
+                    })
+                });
+                
+                if (response.ok) {
+                    console.log('Sincronizare reușită');
+                }
+            } catch (e) {
+                console.log('Serverul nu este disponibil, date salvate local');
+            }
+        }
+
+        // Salvează periodic și sincronizează
+        setInterval(() => {
+            syncWithServer();
+        }, 30000); // La fiecare 30 secunde
+
         window.addEventListener('load', function() {
+            // Inițializează lista de cumpărături
+            loadShoppingList();
+            renderShoppingList();
+            populateCategorySelect();
+            
+            // Verifică dacă avem un URL shared
+            const params = new URLSearchParams(window.location.search);
+            const sharedId = params.get('shared');
+            if (sharedId) {
+                loadSharedList(sharedId);
+            }
+            
+            // Generează menu
             generateMenu();
         });
     </script>

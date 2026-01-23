@@ -13,7 +13,7 @@ export default function handler(req, res) {
     }
 
     if (req.method === 'POST') {
-        const { sessionId, data } = req.body;
+        const { sessionId, data, timestamp } = req.body;
         
         if (!sessionId || !data) {
             return res.status(400).json({ 
@@ -25,13 +25,15 @@ export default function handler(req, res) {
             // Store the shopping list with timestamp
             shoppingListStore[sessionId] = {
                 data,
-                lastUpdated: new Date().toISOString()
+                lastUpdated: new Date().toISOString(),
+                timestamp: timestamp || Date.now()
             };
 
             return res.status(200).json({ 
                 success: true, 
                 message: 'Shopping list saved',
-                sessionId 
+                sessionId,
+                lastUpdated: shoppingListStore[sessionId].lastUpdated
             });
         } catch (error) {
             return res.status(500).json({ 
@@ -57,7 +59,11 @@ export default function handler(req, res) {
             });
         }
 
-        return res.status(200).json(stored);
+        return res.status(200).json({
+            data: stored.data,
+            lastUpdated: new Date(stored.lastUpdated).getTime(),
+            timestamp: stored.timestamp
+        });
     }
 
     res.status(405).json({ error: 'Method not allowed' });

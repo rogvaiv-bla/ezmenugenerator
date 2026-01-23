@@ -431,9 +431,18 @@
         .item-controls {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 12px;
             flex-shrink: 0;
             margin-left: auto;
+            padding-left: 12px;
+            border-left: 2px solid #ddd;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            flex-shrink: 0;
         }
 
         .quantity-btn {
@@ -468,16 +477,51 @@
         }
 
         .item-delete {
-            background: #ff6b6b;
+            background: #d32f2f;
             color: white;
-            border: none;
-            padding: 6px 10px;
+            border: 2px solid #b71c1c;
+            padding: 6px 12px;
             border-radius: 4px;
             cursor: pointer;
-            font-size: 0.85em;
+            font-size: 0.8em;
+            font-weight: 600;
             transition: all 0.2s;
             flex-shrink: 0;
             white-space: nowrap;
+            position: relative;
+        }
+
+        .item-delete:hover {
+            background: #b71c1c;
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
+        }
+
+        .item-delete:active {
+            transform: scale(0.96);
+        }
+
+        /* Tooltip pentru delete button */
+        .item-delete::before {
+            content: 'Șterge item';
+            position: absolute;
+            bottom: 110%;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #d32f2f;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.75em;
+            white-space: nowrap;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.2s;
+            z-index: 10;
+        }
+
+        .item-delete:hover::before {
+            opacity: 1;
         }
 
         .item-delete:hover {
@@ -930,9 +974,13 @@
 
         // Salvează lista în localStorage
         function saveShoppingList() {
+            // Salvează local
             localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
             updateStats();
             renderShoppingList();
+            
+            // Sincronizează imediat cu serverul
+            syncWithServer();
         }
 
         // Renderează lista de cumpărături
@@ -950,12 +998,20 @@
                 // Separează emoji din categoria
                 let categoryText = category;
                 let emoji = '';
-                const emojiMatch = category.match(/^(.)\s(.+)$/);
-                if (emojiMatch) {
-                    const match = category.match(/^([\p{Emoji_Presentation}]|\p{Extended_Pictographic})+\s(.+)$/u);
-                    if (match) {
-                        emoji = match[1];
-                        categoryText = match[2];
+                // Detectează daca prima parte e emoji (încă din textul original ca "🥬 Legume")
+                for (let i = 0; i < category.length; i++) {
+                    const char = category[i];
+                    // Verifică daca e emoji
+                    const code = char.charCodeAt(0);
+                    if (code > 127 || /\p{Emoji}/u.test(char)) {
+                        emoji += char;
+                    } else if (char === ' ') {
+                        categoryText = category.substring(i + 1);
+                        break;
+                    } else {
+                        emoji = '';
+                        categoryText = category;
+                        break;
                     }
                 }
 
@@ -979,10 +1035,12 @@
                                                onchange="toggleProduct('${category}', '${product}')">
                                         <span class="item-name">${product}</span>
                                         <div class="item-controls">
-                                            <button class="quantity-btn" onclick="decreaseQuantity('${category}', '${product}')">−</button>
-                                            <span class="quantity-display">${quantity}</span>
-                                            <button class="quantity-btn" onclick="increaseQuantity('${category}', '${product}')">+</button>
-                                            <button class="item-delete" onclick="deleteProduct('${category}', '${product}')">✕ Șterge</button>
+                                            <div class="quantity-controls">
+                                                <button class="quantity-btn" onclick="decreaseQuantity('${category}', '${product}')">−</button>
+                                                <span class="quantity-display">${quantity}</span>
+                                                <button class="quantity-btn" onclick="increaseQuantity('${category}', '${product}')">+</button>
+                                            </div>
+                                            <button class="item-delete" onclick="deleteProduct('${category}', '${product}')">🗑️ Șterge</button>
                                         </div>
                                     </div>
                                 `;
@@ -1277,10 +1335,11 @@
             }
         }
 
-        // Sincronizează cu serverul (pentru viitor)
+        // Sincronizează imediat după fiecare schimbare (PUSH)
         async function syncWithServer() {
             const sessionId = localStorage.getItem('sessionId') || 'local_' + Date.now();
             localStorage.setItem('sessionId', sessionId);
+            localStorage.setItem('lastSyncTime', Date.now());
             
             try {
                 const response = await fetch('/api/shopping-list', {
@@ -1290,22 +1349,68 @@
                     },
                     body: JSON.stringify({
                         sessionId: sessionId,
-                        data: shoppingList
+                        data: shoppingList,
+                        timestamp: Date.now()
                     })
                 });
                 
                 if (response.ok) {
-                    console.log('Sincronizare reușită');
+                    console.log('[SYNC UP] ✓ Date trimise la server');
                 }
             } catch (e) {
-                console.log('Serverul nu este disponibil, date salvate local');
+                console.log('[SYNC UP] ✗ Serverul indisponibil, date locale salvate');
             }
         }
 
-        // Salvează periodic și sincronizează
+        // Trage date fresh de pe server (PULL) - sincronizare multi-device
+        async function pullFromServer() {
+            const sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) return;
+
+            try {
+                const response = await fetch(`/api/shopping-list?sessionId=${sessionId}`);
+                
+                if (response.ok) {
+                    const serverData = await response.json();
+                    const serverTimestamp = serverData.lastUpdated || 0;
+                    const localTimestamp = localStorage.getItem('lastSyncTime') || 0;
+
+                    // Daca server are versiune mai noua, actualizeaza local
+                    if (serverTimestamp > localTimestamp) {
+                        const oldList = JSON.stringify(shoppingList);
+                        shoppingList = serverData.data;
+                        const newList = JSON.stringify(shoppingList);
+                        
+                        // Daca s-a schimbat ceva, re-render
+                        if (oldList !== newList) {
+                            console.log('[SYNC DOWN] ✓ Date actualizate de pe server');
+                            renderShoppingList();
+                            updateStats();
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log('[SYNC DOWN] ✗ Nu s-au putut trage date de pe server');
+            }
+        }
+
+        // Sincronizează imediat după fiecare schimbare
+        function saveShoppingListWithSync() {
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+            updateStats();
+            renderShoppingList();
+            syncWithServer();  // Sincronizează imediat!
+        }
+
+        // PULL fresh data la fiecare 5 secunde (sincronizare multi-device)
+        setInterval(() => {
+            pullFromServer();
+        }, 5000); // 5 secunde
+        
+        // Și periodic PUSH, backup la 30s
         setInterval(() => {
             syncWithServer();
-        }, 30000); // La fiecare 30 secunde
+        }, 30000); // 30 secunde
 
         window.addEventListener('load', function() {
             // Inițializează lista de cumpărături

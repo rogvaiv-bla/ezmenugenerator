@@ -265,6 +265,230 @@
             display: block;
         }
 
+        /* Taburi navigație */
+        .tabs-container {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid #e0e0e0;
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            padding: 12px 24px;
+            font-size: 1em;
+            cursor: pointer;
+            color: #999;
+            border-bottom: 3px solid transparent;
+            transition: all 0.3s;
+            font-weight: 600;
+            box-shadow: none;
+        }
+
+        .tab-btn:hover {
+            color: #667eea;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .tab-btn.active {
+            color: #667eea;
+            border-bottom-color: #667eea;
+        }
+
+        /* Shopping List Styles */
+        .shopping-list-container {
+            display: none;
+        }
+
+        .shopping-list-container.active {
+            display: block;
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        .category {
+            margin-bottom: 28px;
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+            padding: 12px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            margin-bottom: 12px;
+            transition: all 0.3s;
+            user-select: none;
+        }
+
+        .category-header:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+        }
+
+        .category-header .toggle-icon {
+            font-size: 1.2em;
+            margin-right: 12px;
+            transition: transform 0.3s;
+        }
+
+        .category-header.collapsed .toggle-icon {
+            transform: rotate(-90deg);
+        }
+
+        .category-name {
+            font-weight: 700;
+            font-size: 1.05em;
+            flex-grow: 1;
+        }
+
+        .category-count {
+            background: rgba(255, 255, 255, 0.3);
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            margin-left: 12px;
+        }
+
+        .category-items {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            padding-left: 20px;
+            transition: all 0.3s;
+            max-height: 500px;
+            overflow: hidden;
+        }
+
+        .category-items.collapsed {
+            max-height: 0;
+            opacity: 0;
+        }
+
+        .item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8f9fa;
+            border-radius: 6px;
+            transition: all 0.2s;
+        }
+
+        .item:hover {
+            background: #e9ecef;
+            transform: translateX(4px);
+        }
+
+        .item input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
+            accent-color: #667eea;
+        }
+
+        .item-name {
+            flex-grow: 1;
+            color: #333;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+
+        .item input[type="checkbox"]:checked ~ .item-name {
+            text-decoration: line-through;
+            color: #999;
+        }
+
+        .item-delete {
+            background: #ff6b6b;
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.9em;
+            transition: all 0.2s;
+        }
+
+        .item-delete:hover {
+            background: #ff5252;
+        }
+
+        .add-item-section {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .add-item-section select,
+        .add-item-section input,
+        .add-item-section button {
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            font-size: 1em;
+        }
+
+        .add-item-section select {
+            flex: 0 0 200px;
+            background: white;
+            cursor: pointer;
+        }
+
+        .add-item-section input {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .add-item-section button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            cursor: pointer;
+            font-weight: 600;
+            white-space: nowrap;
+            box-shadow: none;
+        }
+
+        .add-item-section button:hover {
+            opacity: 0.9;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .stats {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .stat {
+            text-align: center;
+            padding: 15px 25px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            opacity: 0.9;
+        }
+
         @media (max-width: 768px) {
             .header h1 {
                 font-size: 2em;
@@ -289,6 +513,23 @@
             .recipe-name {
                 font-size: 1.1em;
             }
+
+            .add-item-section {
+                flex-direction: column;
+            }
+
+            .add-item-section select {
+                flex: 1;
+            }
+
+            .tabs-container {
+                flex-wrap: wrap;
+            }
+
+            .tab-btn {
+                padding: 10px 16px;
+                font-size: 0.9em;
+            }
         }
     </style>
 </head>
@@ -296,25 +537,366 @@
     <div class="container">
         <div class="header">
             <h1>🍽️ CE MĂNÂNC AZI?</h1>
-            <p>Generează meniul tău săptămânal</p>
+            <p>Generează meniul tău săptămânal & gestiona cumpărăturile</p>
         </div>
 
-        <div class="button-container">
-            <button id="generateBtn" onclick="generateMenu()">GENEREAZĂ MENIU</button>
+        <!-- Taburi Navigație -->
+        <div class="tabs-container">
+            <button class="tab-btn active" onclick="switchTab('menu')">📅 Menu Săptămânal</button>
+            <button class="tab-btn" onclick="switchTab('shopping')">🛒 Lista de Cumpărături</button>
         </div>
 
-        <div class="loading" id="loading">
-            ⏳ Se generează meniu...
+        <!-- Tab 1: Menu -->
+        <div id="menu-tab">
+            <div class="button-container">
+                <button id="generateBtn" onclick="generateMenu()">GENEREAZĂ MENIU</button>
+            </div>
+
+            <div class="loading" id="loading">
+                ⏳ Se generează meniu...
+            </div>
+
+            <div class="menu-container" id="menuContainer">
+                <div class="menu-grid" id="menuGrid"></div>
+            </div>
         </div>
 
-        <div class="menu-container" id="menuContainer">
-            <div class="menu-grid" id="menuGrid"></div>
+        <!-- Tab 2: Shopping List -->
+        <div id="shopping-tab" style="display: none;">
+            <div class="stats" id="stats-container">
+                <div class="stat">
+                    <span class="stat-number" id="total-items">0</span>
+                    <span class="stat-label">Produse Total</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="checked-items">0</span>
+                    <span class="stat-label">Cumpărate</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-number" id="remaining-items">0</span>
+                    <span class="stat-label">Rămase</span>
+                </div>
+            </div>
+
+            <div class="shopping-list-container active" id="shoppingListContainer"></div>
+
+            <div class="add-item-section">
+                <select id="categorySelect">
+                    <option value="">Selectează categorie...</option>
+                </select>
+                <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Smântână)">
+                <button onclick="addProduct()">➕ Adaugă Produs</button>
+            </div>
         </div>
     </div>
 
     <script>
         let recipesData = {}; 
         let expandedCard = null;
+        let shoppingList = {};
+
+        // Inițializare lista de cumpărături
+        const defaultShoppingList = {
+            "🥬 Legume / Fructe": {
+                "Banane 🍌": false,
+                "Avocado 🥑": false,
+                "Roșii 🍅": false,
+                "Clementine 🍊": false,
+                "Cartofi 🥔": false,
+                "Ceapă 🧅": false,
+                "Castraveți 🥒": false,
+                "Ardel grăsuț 🌶️": false,
+                "Morcovi 🥕": false,
+                "Usturoi 🧄": false,
+                "Lămâi 🍋": false,
+                "Portocale 🍊": false,
+                "Ceapă roșie": false,
+                "Struguri 🍇": false,
+                "Mere 🍎🍏": false,
+                "Porumb 🌽": false,
+                "Vânătă 🍆": false,
+                "Varză 🥬": false,
+                "Salată 🥗": false,
+                "Pepene 🍉": false,
+                "Cireșe 🍒": false,
+                "Ananas 🍍": false,
+                "Piersici 🍑": false,
+                "Căpșuni 🍓": false,
+                "Spanac 🌿": false,
+                "Afine 🫐": false,
+                "Ciuperci 🍄": false
+            },
+            "🥛 Lactate și ouă": {
+                "Iaurt grecesc 🧿": false,
+                "Lapte 🥛": false,
+                "Ouă 🥚": false,
+                "Unt 🧈": false,
+                "Smântână": false,
+                "Cașcaval 🧀": false,
+                "Brânză rasă": false,
+                "Mascarpone": false,
+                "Frișcă lichidă": false,
+                "Kiri": false
+            },
+            "🥩 Carne": {
+                "Găină 🐓": false,
+                "Piept de pui 🍗": false,
+                "Carne vită/porc 🥩": false,
+                "Pulpe de pui 🐣": false,
+                "Cârnați": false,
+                "Carne tocată de vită": false,
+                "Șuncă 🥓": false,
+                "Ficaței de pui": false
+            },
+            "🏠 Gospodărie": {
+                "Rolă de hârtie 🧻": false,
+                "Lavete": false,
+                "Detergent de vase 🫧": false,
+                "Spălător de sârmă": false,
+                "Hârtie igienica 🧻": false,
+                "Bureți de vase": false,
+                "Saci gunoi": false,
+                "Javel": false,
+                "Detergent haine 🫧": false,
+                "Săpun lichid 🧴": false
+            },
+            "💆 Ingrijire personală": {
+                "Deodorant": false,
+                "Gel de dus 🛀": false,
+                "Pastă de dinți 🪥": false,
+                "Lame de ras 🪒": false,
+                "Șampon": false,
+                "Bețișoare de urechi": false
+            },
+            "💊 Farmacie": {
+                "Pentru gât": false,
+                "Leucoplast": false,
+                "Decasept": false,
+                "Spirt": false,
+                "Ibuprofen": false,
+                "Iod": false
+            },
+            "🥤 Băuturi": {
+                "Coca Cola 🥤": false,
+                "Suc de fructe 🧃": false,
+                "Apă 💧": false,
+                "Capsule cafea ☕️": false,
+                "Sprite": false,
+                "Bere 🍺": false,
+                "Vin 🍷": false
+            },
+            "🍞 Brutarie": {
+                "Biscuiți WASA 🍘": false,
+                "Pâine 🍞": false,
+                "Pâine feliată 🥪": false,
+                "Baghetă 🥖": false,
+                "Lipii": false
+            },
+            "🐟 Pește": {
+                "Somon afumat 🍣": false,
+                "Pește congelat 🎣": false,
+                "Conserve ton/somon": false,
+                "Ton": false,
+                "Icre": false
+            },
+            "🏪 Cămară": {
+                "Zahăr": false,
+                "Oțet": false,
+                "Faină": false,
+                "Pesto": false,
+                "Orez 🍙": false,
+                "Ulei de măsline 🫒": false,
+                "Paste linguine": false,
+                "Nuci": false,
+                "Maioneză": false,
+                "Pastă de tomate 🥫": false,
+                "Sare 🧂": false,
+                "Ceai 🫖": false,
+                "Ulei de floarea soarelui 🌻": false,
+                "Piper": false,
+                "Ulei de cocos 🥥": false,
+                "Paste 🍝": false,
+                "Roșii pasate": false,
+                "Conservă fasole albe 🫘": false
+            },
+            "🍬 Dulciuri": {
+                "Biscuiți": false,
+                "Dulciuri 🍬": false,
+                "Batoane Nakd": false,
+                "Ciocolată 🍫": false,
+                "Înghețată 🍧": false,
+                "Sirop Agave": false,
+                "Cereale 🥣": false
+            },
+            "👕 De îmbrăcat": {
+                "Șlapi": false,
+                "Hanorac": false,
+                "Pulover": false,
+                "Pantaloni scurți": false
+            },
+            "📦 Altele": {
+                "Sită/plasă chiuvetă": false,
+                "Bec congelator": false,
+                "Hârtie A4": false,
+                "Markere whiteboard": false,
+                "Farfurie adâncă": false
+            }
+        };
+
+        // Încarcă lista din localStorage
+        function loadShoppingList() {
+            const saved = localStorage.getItem('shoppingList');
+            shoppingList = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultShoppingList));
+        }
+
+        // Salvează lista în localStorage
+        function saveShoppingList() {
+            localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+            updateStats();
+            renderShoppingList();
+        }
+
+        // Schimbă tab
+        function switchTab(tab) {
+            // Ascunde toate taburile
+            document.getElementById('menu-tab').style.display = 'none';
+            document.getElementById('shopping-tab').style.display = 'none';
+
+            // Afișează tabul selectat
+            if (tab === 'menu') {
+                document.getElementById('menu-tab').style.display = 'block';
+            } else {
+                document.getElementById('shopping-tab').style.display = 'block';
+                loadShoppingList();
+                renderShoppingList();
+                populateCategorySelect();
+            }
+
+            // Actualizează tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
+
+        // Renderează lista de cumpărături
+        function renderShoppingList() {
+            const container = document.getElementById('shoppingListContainer');
+            let html = '';
+
+            for (const [category, items] of Object.entries(shoppingList)) {
+                const itemCount = Object.keys(items).length;
+                const checkedCount = Object.values(items).filter(v => v).length;
+
+                html += `
+                    <div class="category">
+                        <div class="category-header" onclick="toggleCategory(event)">
+                            <span class="toggle-icon">▶️</span>
+                            <span class="category-name">${category}</span>
+                            <span class="category-count">${checkedCount}/${itemCount}</span>
+                        </div>
+                        <div class="category-items">
+                            ${Object.entries(items).map(([product, checked]) => `
+                                <div class="item">
+                                    <input type="checkbox" ${checked ? 'checked' : ''} 
+                                           onchange="toggleProduct('${category}', '${product}')">
+                                    <span class="item-name">${product}</span>
+                                    <button class="item-delete" onclick="deleteProduct('${category}', '${product}')">✕ Șterge</button>
+                                </div>
+                            `).join('')}
+                        </div>
+                    </div>
+                `;
+            }
+
+            container.innerHTML = html;
+        }
+
+        // Toggle categorie
+        function toggleCategory(event) {
+            const header = event.currentTarget;
+            header.classList.toggle('collapsed');
+            const items = header.nextElementSibling;
+            items.classList.toggle('collapsed');
+        }
+
+        // Toggle produs (bifat/nebifat)
+        function toggleProduct(category, product) {
+            shoppingList[category][product] = !shoppingList[category][product];
+            saveShoppingList();
+        }
+
+        // Șterge produs
+        function deleteProduct(category, product) {
+            delete shoppingList[category][product];
+            saveShoppingList();
+        }
+
+        // Adaugă produs nou
+        function addProduct() {
+            const category = document.getElementById('categorySelect').value;
+            const product = document.getElementById('productInput').value.trim();
+
+            if (!category) {
+                alert('⚠️ Selectează o categorie!');
+                return;
+            }
+
+            if (!product) {
+                alert('⚠️ Introduceți un produs!');
+                return;
+            }
+
+            if (shoppingList[category][product] !== undefined) {
+                alert('⚠️ Acest produs există deja în lista!');
+                return;
+            }
+
+            shoppingList[category][product] = false;
+            saveShoppingList();
+
+            document.getElementById('productInput').value = '';
+            document.getElementById('productInput').focus();
+        }
+
+        // Populează dropdown cu categorii
+        function populateCategorySelect() {
+            const select = document.getElementById('categorySelect');
+            select.innerHTML = '<option value="">Selectează categorie...</option>';
+            Object.keys(shoppingList).forEach(category => {
+                const option = document.createElement('option');
+                option.value = category;
+                option.textContent = category;
+                select.appendChild(option);
+            });
+        }
+
+        // Actualizează statistici
+        function updateStats() {
+            let total = 0;
+            let checked = 0;
+
+            for (const items of Object.values(shoppingList)) {
+                for (const [_, isChecked] of Object.entries(items)) {
+                    total++;
+                    if (isChecked) checked++;
+                }
+            }
+
+            document.getElementById('total-items').textContent = total;
+            document.getElementById('checked-items').textContent = checked;
+            document.getElementById('remaining-items').textContent = total - checked;
+        }
+
+        // Permite Enter key pentru adăugare
+        document.addEventListener('DOMContentLoaded', function() {
+            const productInput = document.getElementById('productInput');
+            if (productInput) {
+                productInput.addEventListener('keypress', function(e) {
+                    if (e.key === 'Enter') {
+                        addProduct();
+                    }
+                });
+            }
+        });
 
         function searchRecipe(event, recipeName, recipeUrl) {
             event.stopPropagation();
@@ -331,20 +913,17 @@
             const card = event.currentTarget;
             const ingredientsContainer = card.querySelector('.ingredients-container');
             
-            // Dacă cardul era deja expandat, închide-l
             if (card === expandedCard) {
                 ingredientsContainer.classList.remove('active');
                 card.classList.remove('show-ingredients');
                 expandedCard = null;
             } else {
-                // Închide cardul anterior dacă există
                 if (expandedCard) {
                     const prevContainer = expandedCard.querySelector('.ingredients-container');
                     prevContainer.classList.remove('active');
                     expandedCard.classList.remove('show-ingredients');
                 }
                 
-                // Expandează noul card
                 ingredientsContainer.classList.add('active');
                 card.classList.add('show-ingredients');
                 expandedCard = card;

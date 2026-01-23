@@ -1090,6 +1090,14 @@
             localStorage.setItem('categoryStates', JSON.stringify(states));
         }
 
+        // Fast save for single category toggle (no full query)
+        function saveSingleCategoryState(header) {
+            const states = JSON.parse(localStorage.getItem('categoryStates') || '{}');
+            const categoryName = header.querySelector('.category-name').textContent;
+            states[categoryName] = header.classList.contains('collapsed');
+            localStorage.setItem('categoryStates', JSON.stringify(states));
+        }
+
         // Restaurează starea categoriilor din localStorage
         function restoreCategoryStates() {
             const states = JSON.parse(localStorage.getItem('categoryStates') || '{}');
@@ -1112,7 +1120,8 @@
             header.classList.toggle('collapsed');
             const items = header.nextElementSibling;
             items.classList.toggle('collapsed');
-            saveCategoryStates();
+            // Fast save - only this category
+            saveSingleCategoryState(header);
         }
 
         // Toggle selectează/deselectează toată categoria

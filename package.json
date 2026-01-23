@@ -7,7 +7,9 @@
     "build": "echo 'Build complete'",
     "dev": "vercel dev"
   },
-  "dependencies": {},
+  "dependencies": {
+    "redis": "^4.6.0"
+  },
   "devDependencies": {
     "vercel": "latest"
   }

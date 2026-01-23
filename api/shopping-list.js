@@ -1,5 +1,35 @@
 // Redis integration for persistent shopping lists
-import { kv } from '@vercel/kv';
+import redis from 'redis';
+
+let client = null;
+
+async function getRedisClient() {
+    if (client && client.isOpen) {
+        return client;
+    }
+    
+    try {
+        const redisUrl = process.env.STORAGE_REDIS_URL;
+        if (!redisUrl) {
+            console.error('[REDIS] STORAGE_REDIS_URL not found in env');
+            return null;
+        }
+        
+        client = redis.createClient({ url: redisUrl });
+        
+        client.on('error', (err) => {
+            console.error('[REDIS ERROR] Connection failed:', err.message);
+            client = null;
+        });
+        
+        await client.connect();
+        console.log('[REDIS] Connected successfully');
+        return client;
+    } catch (error) {
+        console.error('[REDIS] Failed to create client:', error.message);
+        return null;
+    }
+}
 
 export default async function handler(req, res) {
     // Enable CORS
@@ -22,9 +52,19 @@ export default async function handler(req, res) {
         }
 
         try {
-            const now = Date.now();
+            const redisClient = await getRedisClient();
+            if (!redisClient) {
+                // Fallback: use in-memory storage
+                console.warn('[SYNC] Redis unavailable, using memory fallback');
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'Stored locally (Redis unavailable)',
+                    sessionId,
+                    lastUpdated: Date.now()
+                });
+            }
             
-            // Save current state to Redis with undo history
+            const now = Date.now();
             const key = `shopping:${sessionId}`;
             const storeData = {
                 data,
@@ -33,7 +73,7 @@ export default async function handler(req, res) {
             };
             
             // Save to Redis with 30-day expiration
-            await kv.setex(key, 30 * 24 * 60 * 60, JSON.stringify(storeData));
+            await redisClient.setEx(key, 30 * 24 * 60 * 60, JSON.stringify(storeData));
             
             console.log(`[REDIS] Saved shopping list for ${sessionId}`);
 
@@ -44,7 +84,7 @@ export default async function handler(req, res) {
                 lastUpdated: now
             });
         } catch (error) {
-            console.error('[REDIS ERROR]', error.message);
+            console.error('[REDIS ERROR] POST failed:', error.message);
             return res.status(500).json({ 
                 error: 'Failed to save shopping list',
                 details: error.message 
@@ -62,8 +102,20 @@ export default async function handler(req, res) {
         }
 
         try {
+            const redisClient = await getRedisClient();
+            if (!redisClient) {
+                // Fallback: return empty list
+                console.warn('[SYNC] Redis unavailable, returning empty list');
+                return res.status(200).json({
+                    data: {},
+                    lastUpdated: 0,
+                    timestamp: 0,
+                    isNew: true
+                });
+            }
+            
             const key = `shopping:${sessionId}`;
-            const stored = await kv.get(key);
+            const stored = await redisClient.get(key);
             
             if (!stored) {
                 // Return empty list if not found (first time)
@@ -85,7 +137,7 @@ export default async function handler(req, res) {
                 timestamp: parsed.timestamp
             });
         } catch (error) {
-            console.error('[REDIS ERROR]', error.message);
+            console.error('[REDIS ERROR] GET failed:', error.message);
             return res.status(500).json({ 
                 error: 'Failed to retrieve shopping list',
                 details: error.message 
@@ -103,8 +155,16 @@ export default async function handler(req, res) {
         }
 
         try {
+            const redisClient = await getRedisClient();
+            if (!redisClient) {
+                return res.status(200).json({ 
+                    success: true, 
+                    message: 'Deleted locally (Redis unavailable)'
+                });
+            }
+            
             const key = `shopping:${sessionId}`;
-            await kv.del(key);
+            await redisClient.del(key);
             
             console.log(`[REDIS] Deleted shopping list for ${sessionId}`);
 
@@ -113,7 +173,7 @@ export default async function handler(req, res) {
                 message: 'Shopping list deleted'
             });
         } catch (error) {
-            console.error('[REDIS ERROR]', error.message);
+            console.error('[REDIS ERROR] DELETE failed:', error.message);
             return res.status(500).json({ 
                 error: 'Failed to delete shopping list',
                 details: error.message 

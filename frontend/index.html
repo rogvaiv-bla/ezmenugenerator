@@ -383,13 +383,33 @@
             gap: 10px;
             padding-left: 20px;
             transition: all 0.3s;
-            max-height: 500px;
-            overflow: hidden;
+            max-height: 70vh;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding-right: 8px;
         }
 
         .category-items.collapsed {
             max-height: 0;
             opacity: 0;
+        }
+
+        /* Scrollbar styling for better mobile experience */
+        .category-items::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .category-items::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .category-items::-webkit-scrollbar-thumb {
+            background: #ddd;
+            border-radius: 3px;
+        }
+
+        .category-items::-webkit-scrollbar-thumb:hover {
+            background: #999;
         }
 
         .item {

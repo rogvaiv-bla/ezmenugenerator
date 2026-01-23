@@ -287,13 +287,13 @@
         }
 
         .tab-btn:hover {
-            color: #4CAF50;
+            color: #00BCD4;
             transform: none;
             box-shadow: none;
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
             color: white;
             border-radius: 8px 8px 0 0;
             border-bottom-color: transparent;
@@ -318,7 +318,7 @@
             align-items: center;
             cursor: pointer;
             padding: 12px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
             color: white;
             border-radius: 8px;
             margin-bottom: 12px;
@@ -352,7 +352,26 @@
             padding: 4px 12px;
             border-radius: 20px;
             font-size: 0.9em;
-            margin-left: 12px;
+            margin-left: auto;
+            margin-right: 12px;
+        }
+
+        .check-all-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.5);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-weight: 600;
+        }
+
+        .check-all-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+            border-color: white;
         }
 
         .category-items {
@@ -389,7 +408,7 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #4CAF50;
+            accent-color: #00BCD4;
         }
 
         .item-name {
@@ -411,7 +430,7 @@
         }
 
         .quantity-btn {
-            background: #4CAF50;
+            background: #00BCD4;
             color: white;
             border: none;
             width: 28px;
@@ -427,7 +446,7 @@
         }
 
         .quantity-btn:hover {
-            background: #45a049;
+            background: #0097A7;
             transform: scale(1.1);
         }
 
@@ -459,7 +478,7 @@
             gap: 10px;
             margin-bottom: 30px;
             padding: 20px;
-            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
             border-radius: 8px;
         }
 
@@ -485,8 +504,8 @@
 
         .add-item-section button {
             background: white;
-            color: #4CAF50;
-            border: 2px solid #4CAF50;
+            color: #00BCD4;
+            border: 2px solid white;
             cursor: pointer;
             font-weight: 600;
             white-space: nowrap;
@@ -812,6 +831,7 @@
                 const checkedCount = Object.values(items).filter(item => {
                     return typeof item === 'object' ? item.checked : item;
                 }).length;
+                const allChecked = checkedCount === itemCount && itemCount > 0;
 
                 html += `
                     <div class="category">
@@ -819,6 +839,9 @@
                             <span class="toggle-icon">▶️</span>
                             <span class="category-name">${category}</span>
                             <span class="category-count">${checkedCount}/${itemCount}</span>
+                            <button class="check-all-btn" onclick="toggleCategoryAll(event, '${category}')" style="margin-left: auto;">
+                                ${allChecked ? '✓ Deselectează' : '☐ Selectează'}
+                            </button>
                         </div>
                         <div class="category-items">
                             ${Object.entries(items).map(([product, data]) => {
@@ -852,6 +875,27 @@
             header.classList.toggle('collapsed');
             const items = header.nextElementSibling;
             items.classList.toggle('collapsed');
+        }
+
+        // Toggle selectează/deselectează toată categoria
+        function toggleCategoryAll(event, category) {
+            event.stopPropagation();
+            
+            // Verifică dacă toate sunt bifate
+            const allChecked = Object.values(shoppingList[category]).every(item => {
+                return typeof item === 'object' ? item.checked : item;
+            });
+
+            // Toggle toate
+            for (const product in shoppingList[category]) {
+                if (typeof shoppingList[category][product] === 'object') {
+                    shoppingList[category][product].checked = !allChecked;
+                } else {
+                    shoppingList[category][product] = !allChecked;
+                }
+            }
+
+            saveShoppingList();
         }
 
         // Toggle produs (bifat/nebifat)

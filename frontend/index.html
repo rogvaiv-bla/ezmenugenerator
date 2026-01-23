@@ -270,7 +270,7 @@
             display: flex;
             gap: 10px;
             margin-bottom: 30px;
-            border-bottom: 2px solid #e0e0e0;
+            border-bottom: 3px solid #e0e0e0;
         }
 
         .tab-btn {
@@ -287,14 +287,16 @@
         }
 
         .tab-btn:hover {
-            color: #667eea;
+            color: #4CAF50;
             transform: none;
             box-shadow: none;
         }
 
         .tab-btn.active {
-            color: #667eea;
-            border-bottom-color: #667eea;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
+            color: white;
+            border-radius: 8px 8px 0 0;
+            border-bottom-color: transparent;
         }
 
         /* Shopping List Styles */
@@ -387,11 +389,11 @@
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #667eea;
+            accent-color: #4CAF50;
         }
 
         .item-name {
-            flex-grow: 1;
+            flex: 1;
             color: #333;
             font-weight: 500;
             transition: all 0.2s;
@@ -400,6 +402,41 @@
         .item input[type="checkbox"]:checked ~ .item-name {
             text-decoration: line-through;
             color: #999;
+        }
+
+        .item-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .quantity-btn {
+            background: #4CAF50;
+            color: white;
+            border: none;
+            width: 28px;
+            height: 28px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            padding: 0;
+        }
+
+        .quantity-btn:hover {
+            background: #45a049;
+            transform: scale(1.1);
+        }
+
+        .quantity-display {
+            min-width: 35px;
+            text-align: center;
+            font-weight: 600;
+            color: #333;
+            font-size: 0.9em;
         }
 
         .item-delete {
@@ -420,9 +457,9 @@
         .add-item-section {
             display: flex;
             gap: 10px;
-            margin-top: 20px;
+            margin-bottom: 30px;
             padding: 20px;
-            background: #f8f9fa;
+            background: linear-gradient(135deg, #4CAF50 0%, #45a049 100%);
             border-radius: 8px;
         }
 
@@ -447,9 +484,9 @@
         }
 
         .add-item-section button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            border: none;
+            background: white;
+            color: #4CAF50;
+            border: 2px solid #4CAF50;
             cursor: pointer;
             font-weight: 600;
             white-space: nowrap;
@@ -460,6 +497,7 @@
             opacity: 0.9;
             transform: none;
             box-shadow: none;
+            background: #f0f0f0;
         }
 
         .stats {
@@ -563,6 +601,14 @@
 
         <!-- Tab 2: Shopping List -->
         <div id="shopping-tab" style="display: none;">
+            <div class="add-item-section">
+                <select id="categorySelect">
+                    <option value="">Selectează categorie...</option>
+                </select>
+                <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Fainaă 4 kg)">
+                <button onclick="addProduct()">➕ Adaugă Produs</button>
+            </div>
+
             <div class="stats" id="stats-container">
                 <div class="stat">
                     <span class="stat-number" id="total-items">0</span>
@@ -579,14 +625,6 @@
             </div>
 
             <div class="shopping-list-container active" id="shoppingListContainer"></div>
-
-            <div class="add-item-section">
-                <select id="categorySelect">
-                    <option value="">Selectează categorie...</option>
-                </select>
-                <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Smântână)">
-                <button onclick="addProduct()">➕ Adaugă Produs</button>
-            </div>
         </div>
     </div>
 
@@ -595,158 +633,166 @@
         let expandedCard = null;
         let shoppingList = {};
 
-        // Inițializare lista de cumpărături
+        // Inițializare lista de cumpărături - structura noua cu cantitate
         const defaultShoppingList = {
             "🥬 Legume / Fructe": {
-                "Banane 🍌": false,
-                "Avocado 🥑": false,
-                "Roșii 🍅": false,
-                "Clementine 🍊": false,
-                "Cartofi 🥔": false,
-                "Ceapă 🧅": false,
-                "Castraveți 🥒": false,
-                "Ardel grăsuț 🌶️": false,
-                "Morcovi 🥕": false,
-                "Usturoi 🧄": false,
-                "Lămâi 🍋": false,
-                "Portocale 🍊": false,
-                "Ceapă roșie": false,
-                "Struguri 🍇": false,
-                "Mere 🍎🍏": false,
-                "Porumb 🌽": false,
-                "Vânătă 🍆": false,
-                "Varză 🥬": false,
-                "Salată 🥗": false,
-                "Pepene 🍉": false,
-                "Cireșe 🍒": false,
-                "Ananas 🍍": false,
-                "Piersici 🍑": false,
-                "Căpșuni 🍓": false,
-                "Spanac 🌿": false,
-                "Afine 🫐": false,
-                "Ciuperci 🍄": false
+                "Banane 🍌": { checked: false, quantity: 1 },
+                "Avocado 🥑": { checked: false, quantity: 1 },
+                "Roșii 🍅": { checked: false, quantity: 1 },
+                "Clementine 🍊": { checked: false, quantity: 1 },
+                "Cartofi 🥔": { checked: false, quantity: 1 },
+                "Ceapă 🧅": { checked: false, quantity: 1 },
+                "Castraveți 🥒": { checked: false, quantity: 1 },
+                "Ardel grăsuț 🌶️": { checked: false, quantity: 1 },
+                "Morcovi 🥕": { checked: false, quantity: 1 },
+                "Usturoi 🧄": { checked: false, quantity: 1 },
+                "Lămâi 🍋": { checked: false, quantity: 1 },
+                "Portocale 🍊": { checked: false, quantity: 1 },
+                "Ceapă roșie": { checked: false, quantity: 1 },
+                "Struguri 🍇": { checked: false, quantity: 1 },
+                "Mere 🍎🍏": { checked: false, quantity: 1 },
+                "Porumb 🌽": { checked: false, quantity: 1 },
+                "Vânătă 🍆": { checked: false, quantity: 1 },
+                "Varză 🥬": { checked: false, quantity: 1 },
+                "Salată 🥗": { checked: false, quantity: 1 },
+                "Pepene 🍉": { checked: false, quantity: 1 },
+                "Cireșe 🍒": { checked: false, quantity: 1 },
+                "Ananas 🍍": { checked: false, quantity: 1 },
+                "Piersici 🍑": { checked: false, quantity: 1 },
+                "Căpșuni 🍓": { checked: false, quantity: 1 },
+                "Spanac 🌿": { checked: false, quantity: 1 },
+                "Afine 🫐": { checked: false, quantity: 1 },
+                "Ciuperci 🍄": { checked: false, quantity: 1 }
             },
             "🥛 Lactate și ouă": {
-                "Iaurt grecesc 🧿": false,
-                "Lapte 🥛": false,
-                "Ouă 🥚": false,
-                "Unt 🧈": false,
-                "Smântână": false,
-                "Cașcaval 🧀": false,
-                "Brânză rasă": false,
-                "Mascarpone": false,
-                "Frișcă lichidă": false,
-                "Kiri": false
+                "Iaurt grecesc 🧿": { checked: false, quantity: 1 },
+                "Lapte 🥛": { checked: false, quantity: 1 },
+                "Ouă 🥚": { checked: false, quantity: 1 },
+                "Unt 🧈": { checked: false, quantity: 1 },
+                "Smântână": { checked: false, quantity: 1 },
+                "Cașcaval 🧀": { checked: false, quantity: 1 },
+                "Brânză rasă": { checked: false, quantity: 1 },
+                "Mascarpone": { checked: false, quantity: 1 },
+                "Frișcă lichidă": { checked: false, quantity: 1 },
+                "Kiri": { checked: false, quantity: 1 }
             },
             "🥩 Carne": {
-                "Găină 🐓": false,
-                "Piept de pui 🍗": false,
-                "Carne vită/porc 🥩": false,
-                "Pulpe de pui 🐣": false,
-                "Cârnați": false,
-                "Carne tocată de vită": false,
-                "Șuncă 🥓": false,
-                "Ficaței de pui": false
+                "Găină 🐓": { checked: false, quantity: 1 },
+                "Piept de pui 🍗": { checked: false, quantity: 1 },
+                "Carne vită/porc 🥩": { checked: false, quantity: 1 },
+                "Pulpe de pui 🐣": { checked: false, quantity: 1 },
+                "Cârnați": { checked: false, quantity: 1 },
+                "Carne tocată de vită": { checked: false, quantity: 1 },
+                "Șuncă 🥓": { checked: false, quantity: 1 },
+                "Ficaței de pui": { checked: false, quantity: 1 }
             },
             "🏠 Gospodărie": {
-                "Rolă de hârtie 🧻": false,
-                "Lavete": false,
-                "Detergent de vase 🫧": false,
-                "Spălător de sârmă": false,
-                "Hârtie igienica 🧻": false,
-                "Bureți de vase": false,
-                "Saci gunoi": false,
-                "Javel": false,
-                "Detergent haine 🫧": false,
-                "Săpun lichid 🧴": false
+                "Rolă de hârtie 🧻": { checked: false, quantity: 1 },
+                "Lavete": { checked: false, quantity: 1 },
+                "Detergent de vase 🫧": { checked: false, quantity: 1 },
+                "Spălător de sârmă": { checked: false, quantity: 1 },
+                "Hârtie igienica 🧻": { checked: false, quantity: 1 },
+                "Bureți de vase": { checked: false, quantity: 1 },
+                "Saci gunoi": { checked: false, quantity: 1 },
+                "Javel": { checked: false, quantity: 1 },
+                "Detergent haine 🫧": { checked: false, quantity: 1 },
+                "Săpun lichid 🧴": { checked: false, quantity: 1 }
             },
             "💆 Ingrijire personală": {
-                "Deodorant": false,
-                "Gel de dus 🛀": false,
-                "Pastă de dinți 🪥": false,
-                "Lame de ras 🪒": false,
-                "Șampon": false,
-                "Bețișoare de urechi": false
+                "Deodorant": { checked: false, quantity: 1 },
+                "Gel de dus 🛀": { checked: false, quantity: 1 },
+                "Pastă de dinți 🪥": { checked: false, quantity: 1 },
+                "Lame de ras 🪒": { checked: false, quantity: 1 },
+                "Șampon": { checked: false, quantity: 1 },
+                "Bețișoare de urechi": { checked: false, quantity: 1 }
             },
             "💊 Farmacie": {
-                "Pentru gât": false,
-                "Leucoplast": false,
-                "Decasept": false,
-                "Spirt": false,
-                "Ibuprofen": false,
-                "Iod": false
+                "Pentru gât": { checked: false, quantity: 1 },
+                "Leucoplast": { checked: false, quantity: 1 },
+                "Decasept": { checked: false, quantity: 1 },
+                "Spirt": { checked: false, quantity: 1 },
+                "Ibuprofen": { checked: false, quantity: 1 },
+                "Iod": { checked: false, quantity: 1 }
             },
             "🥤 Băuturi": {
-                "Coca Cola 🥤": false,
-                "Suc de fructe 🧃": false,
-                "Apă 💧": false,
-                "Capsule cafea ☕️": false,
-                "Sprite": false,
-                "Bere 🍺": false,
-                "Vin 🍷": false
+                "Coca Cola 🥤": { checked: false, quantity: 1 },
+                "Suc de fructe 🧃": { checked: false, quantity: 1 },
+                "Apă 💧": { checked: false, quantity: 1 },
+                "Capsule cafea ☕️": { checked: false, quantity: 1 },
+                "Sprite": { checked: false, quantity: 1 },
+                "Bere 🍺": { checked: false, quantity: 1 },
+                "Vin 🍷": { checked: false, quantity: 1 }
             },
             "🍞 Brutarie": {
-                "Biscuiți WASA 🍘": false,
-                "Pâine 🍞": false,
-                "Pâine feliată 🥪": false,
-                "Baghetă 🥖": false,
-                "Lipii": false
+                "Biscuiți WASA 🍘": { checked: false, quantity: 1 },
+                "Pâine 🍞": { checked: false, quantity: 1 },
+                "Pâine feliată 🥪": { checked: false, quantity: 1 },
+                "Baghetă 🥖": { checked: false, quantity: 1 },
+                "Lipii": { checked: false, quantity: 1 }
             },
             "🐟 Pește": {
-                "Somon afumat 🍣": false,
-                "Pește congelat 🎣": false,
-                "Conserve ton/somon": false,
-                "Ton": false,
-                "Icre": false
+                "Somon afumat 🍣": { checked: false, quantity: 1 },
+                "Pește congelat 🎣": { checked: false, quantity: 1 },
+                "Conserve ton/somon": { checked: false, quantity: 1 },
+                "Ton": { checked: false, quantity: 1 },
+                "Icre": { checked: false, quantity: 1 }
             },
             "🏪 Cămară": {
-                "Zahăr": false,
-                "Oțet": false,
-                "Faină": false,
-                "Pesto": false,
-                "Orez 🍙": false,
-                "Ulei de măsline 🫒": false,
-                "Paste linguine": false,
-                "Nuci": false,
-                "Maioneză": false,
-                "Pastă de tomate 🥫": false,
-                "Sare 🧂": false,
-                "Ceai 🫖": false,
-                "Ulei de floarea soarelui 🌻": false,
-                "Piper": false,
-                "Ulei de cocos 🥥": false,
-                "Paste 🍝": false,
-                "Roșii pasate": false,
-                "Conservă fasole albe 🫘": false
+                "Zahăr": { checked: false, quantity: 1 },
+                "Oțet": { checked: false, quantity: 1 },
+                "Faină": { checked: false, quantity: 1 },
+                "Pesto": { checked: false, quantity: 1 },
+                "Orez 🍙": { checked: false, quantity: 1 },
+                "Ulei de măsline 🫒": { checked: false, quantity: 1 },
+                "Paste linguine": { checked: false, quantity: 1 },
+                "Nuci": { checked: false, quantity: 1 },
+                "Maioneză": { checked: false, quantity: 1 },
+                "Pastă de tomate 🥫": { checked: false, quantity: 1 },
+                "Sare 🧂": { checked: false, quantity: 1 },
+                "Ceai 🫖": { checked: false, quantity: 1 },
+                "Ulei de floarea soarelui 🌻": { checked: false, quantity: 1 },
+                "Piper": { checked: false, quantity: 1 },
+                "Ulei de cocos 🥥": { checked: false, quantity: 1 },
+                "Paste 🍝": { checked: false, quantity: 1 },
+                "Roșii pasate": { checked: false, quantity: 1 },
+                "Conservă fasole albe 🫘": { checked: false, quantity: 1 }
             },
             "🍬 Dulciuri": {
-                "Biscuiți": false,
-                "Dulciuri 🍬": false,
-                "Batoane Nakd": false,
-                "Ciocolată 🍫": false,
-                "Înghețată 🍧": false,
-                "Sirop Agave": false,
-                "Cereale 🥣": false
+                "Biscuiți": { checked: false, quantity: 1 },
+                "Dulciuri 🍬": { checked: false, quantity: 1 },
+                "Batoane Nakd": { checked: false, quantity: 1 },
+                "Ciocolată 🍫": { checked: false, quantity: 1 },
+                "Înghețată 🍧": { checked: false, quantity: 1 },
+                "Sirop Agave": { checked: false, quantity: 1 },
+                "Cereale 🥣": { checked: false, quantity: 1 }
             },
             "👕 De îmbrăcat": {
-                "Șlapi": false,
-                "Hanorac": false,
-                "Pulover": false,
-                "Pantaloni scurți": false
+                "Șlapi": { checked: false, quantity: 1 },
+                "Hanorac": { checked: false, quantity: 1 },
+                "Pulover": { checked: false, quantity: 1 },
+                "Pantaloni scurți": { checked: false, quantity: 1 }
             },
             "📦 Altele": {
-                "Sită/plasă chiuvetă": false,
-                "Bec congelator": false,
-                "Hârtie A4": false,
-                "Markere whiteboard": false,
-                "Farfurie adâncă": false
+                "Sită/plasă chiuvetă": { checked: false, quantity: 1 },
+                "Bec congelator": { checked: false, quantity: 1 },
+                "Hârtie A4": { checked: false, quantity: 1 },
+                "Markere whiteboard": { checked: false, quantity: 1 },
+                "Farfurie adâncă": { checked: false, quantity: 1 }
             }
         };
 
         // Încarcă lista din localStorage
         function loadShoppingList() {
             const saved = localStorage.getItem('shoppingList');
-            shoppingList = saved ? JSON.parse(saved) : JSON.parse(JSON.stringify(defaultShoppingList));
+            if (saved) {
+                try {
+                    shoppingList = JSON.parse(saved);
+                } catch (e) {
+                    shoppingList = JSON.parse(JSON.stringify(defaultShoppingList));
+                }
+            } else {
+                shoppingList = JSON.parse(JSON.stringify(defaultShoppingList));
+            }
         }
 
         // Salvează lista în localStorage
@@ -756,27 +802,6 @@
             renderShoppingList();
         }
 
-        // Schimbă tab
-        function switchTab(tab) {
-            // Ascunde toate taburile
-            document.getElementById('menu-tab').style.display = 'none';
-            document.getElementById('shopping-tab').style.display = 'none';
-
-            // Afișează tabul selectat
-            if (tab === 'menu') {
-                document.getElementById('menu-tab').style.display = 'block';
-            } else {
-                document.getElementById('shopping-tab').style.display = 'block';
-                loadShoppingList();
-                renderShoppingList();
-                populateCategorySelect();
-            }
-
-            // Actualizează tab buttons
-            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
-            event.target.classList.add('active');
-        }
-
         // Renderează lista de cumpărături
         function renderShoppingList() {
             const container = document.getElementById('shoppingListContainer');
@@ -784,7 +809,9 @@
 
             for (const [category, items] of Object.entries(shoppingList)) {
                 const itemCount = Object.keys(items).length;
-                const checkedCount = Object.values(items).filter(v => v).length;
+                const checkedCount = Object.values(items).filter(item => {
+                    return typeof item === 'object' ? item.checked : item;
+                }).length;
 
                 html += `
                     <div class="category">
@@ -794,14 +821,23 @@
                             <span class="category-count">${checkedCount}/${itemCount}</span>
                         </div>
                         <div class="category-items">
-                            ${Object.entries(items).map(([product, checked]) => `
-                                <div class="item">
-                                    <input type="checkbox" ${checked ? 'checked' : ''} 
-                                           onchange="toggleProduct('${category}', '${product}')">
-                                    <span class="item-name">${product}</span>
-                                    <button class="item-delete" onclick="deleteProduct('${category}', '${product}')">✕ Șterge</button>
-                                </div>
-                            `).join('')}
+                            ${Object.entries(items).map(([product, data]) => {
+                                const isChecked = typeof data === 'object' ? data.checked : data;
+                                const quantity = typeof data === 'object' ? data.quantity : 1;
+                                return `
+                                    <div class="item">
+                                        <input type="checkbox" ${isChecked ? 'checked' : ''} 
+                                               onchange="toggleProduct('${category}', '${product}')">
+                                        <span class="item-name">${product}</span>
+                                        <div class="item-controls">
+                                            <button class="quantity-btn" onclick="decreaseQuantity('${category}', '${product}')">−</button>
+                                            <span class="quantity-display">${quantity}</span>
+                                            <button class="quantity-btn" onclick="increaseQuantity('${category}', '${product}')">+</button>
+                                            <button class="item-delete" onclick="deleteProduct('${category}', '${product}')">✕ Șterge</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
                         </div>
                     </div>
                 `;
@@ -820,8 +856,32 @@
 
         // Toggle produs (bifat/nebifat)
         function toggleProduct(category, product) {
-            shoppingList[category][product] = !shoppingList[category][product];
+            if (typeof shoppingList[category][product] === 'object') {
+                shoppingList[category][product].checked = !shoppingList[category][product].checked;
+            } else {
+                shoppingList[category][product] = !shoppingList[category][product];
+            }
             saveShoppingList();
+        }
+
+        // Crește cantitate
+        function increaseQuantity(category, product) {
+            if (typeof shoppingList[category][product] === 'object') {
+                shoppingList[category][product].quantity += 1;
+            } else {
+                shoppingList[category][product] = { checked: false, quantity: 2 };
+            }
+            saveShoppingList();
+        }
+
+        // Scade cantitate
+        function decreaseQuantity(category, product) {
+            if (typeof shoppingList[category][product] === 'object') {
+                if (shoppingList[category][product].quantity > 1) {
+                    shoppingList[category][product].quantity -= 1;
+                    saveShoppingList();
+                }
+            }
         }
 
         // Șterge produs
@@ -833,24 +893,24 @@
         // Adaugă produs nou
         function addProduct() {
             const category = document.getElementById('categorySelect').value;
-            const product = document.getElementById('productInput').value.trim();
+            const productInput = document.getElementById('productInput').value.trim();
 
             if (!category) {
                 alert('⚠️ Selectează o categorie!');
                 return;
             }
 
-            if (!product) {
+            if (!productInput) {
                 alert('⚠️ Introduceți un produs!');
                 return;
             }
 
-            if (shoppingList[category][product] !== undefined) {
+            if (shoppingList[category][productInput] !== undefined) {
                 alert('⚠️ Acest produs există deja în lista!');
                 return;
             }
 
-            shoppingList[category][product] = false;
+            shoppingList[category][productInput] = { checked: false, quantity: 1 };
             saveShoppingList();
 
             document.getElementById('productInput').value = '';
@@ -875,8 +935,9 @@
             let checked = 0;
 
             for (const items of Object.values(shoppingList)) {
-                for (const [_, isChecked] of Object.entries(items)) {
+                for (const [_, data] of Object.entries(items)) {
                     total++;
+                    const isChecked = typeof data === 'object' ? data.checked : data;
                     if (isChecked) checked++;
                 }
             }
@@ -897,6 +958,27 @@
                 });
             }
         });
+
+        // Schimbă tab
+        function switchTab(tab) {
+            // Ascunde toate taburile
+            document.getElementById('menu-tab').style.display = 'none';
+            document.getElementById('shopping-tab').style.display = 'none';
+
+            // Afișează tabul selectat
+            if (tab === 'menu') {
+                document.getElementById('menu-tab').style.display = 'block';
+            } else {
+                document.getElementById('shopping-tab').style.display = 'block';
+                loadShoppingList();
+                renderShoppingList();
+                populateCategorySelect();
+            }
+
+            // Actualizează tab buttons
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+        }
 
         function searchRecipe(event, recipeName, recipeUrl) {
             event.stopPropagation();

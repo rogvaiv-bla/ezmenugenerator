@@ -501,29 +501,6 @@
             transform: scale(0.96);
         }
 
-        /* Tooltip pentru delete button */
-        .item-delete::before {
-            content: 'Șterge item';
-            position: absolute;
-            bottom: 110%;
-            left: 50%;
-            transform: translateX(-50%);
-            background: #d32f2f;
-            color: white;
-            padding: 4px 8px;
-            border-radius: 4px;
-            font-size: 0.75em;
-            white-space: nowrap;
-            opacity: 0;
-            pointer-events: none;
-            transition: opacity 0.2s;
-            z-index: 10;
-        }
-
-        .item-delete:hover::before {
-            opacity: 1;
-        }
-
         .item-delete:hover {
             background: #ff5252;
         }
@@ -580,6 +557,55 @@
             margin-bottom: 20px;
             justify-content: center;
             flex-wrap: wrap;
+        }
+
+        .undo-popup {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: #ff5722;
+            color: white;
+            padding: 0;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            z-index: 1000;
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .undo-popup-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            font-weight: 500;
+        }
+
+        .undo-popup button {
+            background: white;
+            color: #ff5722;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            font-size: 0.9em;
+        }
+
+        .undo-popup button:hover {
+            background: #fff3e0;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateX(-50%) translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(-50%) translateY(0);
+                opacity: 1;
+            }
         }
 
         .stat {
@@ -751,7 +777,7 @@
     <div class="container">
         <div class="header">
             <h1>🍽️ CE MĂNÂNC AZI?</h1>
-            <p>Generează meniul tău săptămânal & gestiona cumpărăturile</p>
+            <p>Generează meniul tău săptămânal & gestioneaza cumpărăturile</p>
         </div>
 
         <!-- Taburi Navigație -->
@@ -783,7 +809,7 @@
                 </select>
                 <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Fainaă 4 kg)">
                 <button onclick="addProduct()">➕ Adaugă Produs</button>
-                <button onclick="generateShareLink()" style="background: #ff9800; margin-left: 8px;">🔗 Partajează Lista</button>
+                <button onclick="generateShareLink()" style="background: #fff3e0; color: #ff9800; border: 2px solid #ff9800; margin-left: 8px; font-weight: 600;">🔗 Partajează Lista</button>
             </div>
 
             <div class="stats" id="stats-container">
@@ -978,6 +1004,7 @@
             localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
             updateStats();
             renderShoppingList();
+            restoreCategoryStates();
             
             // Sincronizează imediat cu serverul
             syncWithServer();
@@ -1053,12 +1080,39 @@
             container.innerHTML = html;
         }
 
+        // Salvează starea categoriilor în localStorage
+        function saveCategoryStates() {
+            const states = {};
+            document.querySelectorAll('.category-header').forEach(header => {
+                const categoryName = header.querySelector('.category-name').textContent;
+                states[categoryName] = header.classList.contains('collapsed');
+            });
+            localStorage.setItem('categoryStates', JSON.stringify(states));
+        }
+
+        // Restaurează starea categoriilor din localStorage
+        function restoreCategoryStates() {
+            const states = JSON.parse(localStorage.getItem('categoryStates') || '{}');
+            document.querySelectorAll('.category-header').forEach(header => {
+                const categoryName = header.querySelector('.category-name').textContent;
+                const isCollapsed = states[categoryName];
+                if (isCollapsed) {
+                    header.classList.add('collapsed');
+                    header.nextElementSibling.classList.add('collapsed');
+                } else {
+                    header.classList.remove('collapsed');
+                    header.nextElementSibling.classList.remove('collapsed');
+                }
+            });
+        }
+
         // Toggle categorie
         function toggleCategory(event) {
             const header = event.currentTarget;
             header.classList.toggle('collapsed');
             const items = header.nextElementSibling;
             items.classList.toggle('collapsed');
+            saveCategoryStates();
         }
 
         // Toggle selectează/deselectează toată categoria
@@ -1112,10 +1166,89 @@
             }
         }
 
-        // Șterge produs
+        let undoStack = []; // Stores recent deletions for undo
+
+        // Șterge produs cu undo option
         function deleteProduct(category, product) {
+            // Save to undo stack
+            undoStack.push({
+                category,
+                product,
+                data: shoppingList[category][product],
+                timestamp: Date.now()
+            });
+
+            // Keep only last 10 undo actions
+            if (undoStack.length > 10) {
+                undoStack.shift();
+            }
+
+            // Delete from list
             delete shoppingList[category][product];
-            saveShoppingList();
+            
+            // Show undo popup
+            showUndoPopup(category, product);
+            
+            // Save to server after 5 seconds (if undo not pressed)
+            setTimeout(() => {
+                const lastUndo = undoStack[undoStack.length - 1];
+                if (lastUndo && lastUndo.category === category && lastUndo.product === product) {
+                    // Undo wasn't pressed, confirm delete
+                    saveShoppingList();
+                }
+            }, 5000);
+        }
+
+        // Show undo popup
+        function showUndoPopup(category, product) {
+            const container = document.getElementById('shoppingListContainer');
+            
+            // Remove any existing undo popup
+            const existing = document.querySelector('.undo-popup');
+            if (existing) existing.remove();
+            
+            // Create popup
+            const popup = document.createElement('div');
+            popup.className = 'undo-popup';
+            popup.innerHTML = `
+                <div class="undo-popup-content">
+                    <span>🗑️ <strong>${product}</strong> șters</span>
+                    <button onclick="undoDelete('${category}', '${product}')">↶ Undo</button>
+                </div>
+            `;
+            
+            container.parentElement.insertBefore(popup, container);
+            
+            // Auto-remove after 5 seconds
+            setTimeout(() => {
+                if (popup.parentElement) {
+                    popup.remove();
+                }
+            }, 5000);
+        }
+
+        // Undo delete
+        function undoDelete(category, product) {
+            const undoItem = undoStack.find(u => u.category === category && u.product === product);
+            
+            if (undoItem) {
+                // Restore item
+                shoppingList[category][product] = undoItem.data;
+                
+                // Remove from undo stack
+                undoStack = undoStack.filter(u => !(u.category === category && u.product === product));
+                
+                // Re-render and save
+                updateStats();
+                renderShoppingList();
+                restoreCategoryStates();
+                
+                console.log(`[UNDO] Restored ${product} in ${category}`);
+                
+                // Remove popup
+                const popup = document.querySelector('.undo-popup');
+                if (popup) popup.remove();
+            }
         }
 
         // Adaugă produs nou
@@ -1175,8 +1308,45 @@
             document.getElementById('remaining-items').textContent = total - checked;
         }
 
-        // Permite Enter key pentru adăugare
-        document.addEventListener('DOMContentLoaded', function() {
+        // Inițializare la încărcarea paginii
+        document.addEventListener('DOMContentLoaded', async function() {
+            // Generate or get sessionId
+            let sessionId = localStorage.getItem('sessionId');
+            if (!sessionId) {
+                sessionId = 'session_' + Date.now();
+                localStorage.setItem('sessionId', sessionId);
+            }
+            
+            console.log('[INIT] SessionId:', sessionId.substring(0, 20) + '...');
+            
+            // Load from localStorage first
+            loadShoppingList();
+            
+            // Then try to sync from Redis
+            try {
+                console.log('[INIT] Loading from Redis...');
+                const response = await fetch(`/api/shopping-list?sessionId=${sessionId}`);
+                if (response.ok) {
+                    const serverData = await response.json();
+                    if (!serverData.isNew && Object.keys(serverData.data).length > 0) {
+                        console.log('[INIT] ✓ Loaded from Redis');
+                        shoppingList = serverData.data;
+                        localStorage.setItem('shoppingList', JSON.stringify(shoppingList));
+                        localStorage.setItem('lastSyncTime', serverData.lastUpdated);
+                    } else {
+                        console.log('[INIT] First time - empty Redis');
+                    }
+                }
+            } catch (e) {
+                console.log('[INIT] Could not reach Redis:', e.message);
+            }
+            
+            // Render UI
+            updateStats();
+            renderShoppingList();
+            restoreCategoryStates();
+            
+            // Setup keyboard listener
             const productInput = document.getElementById('productInput');
             if (productInput) {
                 productInput.addEventListener('keypress', function(e) {
@@ -1185,6 +1355,9 @@
                     }
                 });
             }
+            
+            // Start periodic sync (every 5 seconds)
+            setInterval(pullFromServer, 5000);
         });
 
         // Schimbă tab
@@ -1339,9 +1512,11 @@
         async function syncWithServer() {
             const sessionId = localStorage.getItem('sessionId') || 'local_' + Date.now();
             localStorage.setItem('sessionId', sessionId);
-            localStorage.setItem('lastSyncTime', Date.now());
+            const timestamp = Date.now();
+            localStorage.setItem('lastSyncTime', timestamp);
             
             try {
+                console.log('[SYNC UP] → Pushing to server, sessionId:', sessionId.substring(0, 20) + '...');
                 const response = await fetch('/api/shopping-list', {
                     method: 'POST',
                     headers: {
@@ -1350,30 +1525,40 @@
                     body: JSON.stringify({
                         sessionId: sessionId,
                         data: shoppingList,
-                        timestamp: Date.now()
+                        timestamp: timestamp
                     })
                 });
                 
                 if (response.ok) {
-                    console.log('[SYNC UP] ✓ Date trimise la server');
+                    const result = await response.json();
+                    console.log('[SYNC UP] ✓ Pushed to server, lastUpdated:', result.lastUpdated);
+                } else {
+                    console.log('[SYNC UP] ✗ HTTP', response.status);
                 }
             } catch (e) {
-                console.log('[SYNC UP] ✗ Serverul indisponibil, date locale salvate');
+                console.log('[SYNC UP] ✗ Error:', e.message);
             }
         }
 
         // Trage date fresh de pe server (PULL) - sincronizare multi-device
         async function pullFromServer() {
             const sessionId = localStorage.getItem('sessionId');
-            if (!sessionId) return;
+            if (!sessionId) {
+                console.log('[PULL] ✗ No sessionId');
+                return;
+            }
 
             try {
-                const response = await fetch(`/api/shopping-list?sessionId=${sessionId}`);
+                console.log('[PULL] → Fetching from server, sessionId:', sessionId.substring(0, 20) + '...');
+                const url = `/api/shopping-list?sessionId=${sessionId}`;
+                const response = await fetch(url);
                 
                 if (response.ok) {
                     const serverData = await response.json();
                     const serverTimestamp = serverData.lastUpdated || 0;
-                    const localTimestamp = localStorage.getItem('lastSyncTime') || 0;
+                    const localTimestamp = parseInt(localStorage.getItem('lastSyncTime')) || 0;
+
+                    console.log('[PULL] Server timestamp:', serverTimestamp, 'Local timestamp:', localTimestamp);
 
                     // Daca server are versiune mai noua, actualizeaza local
                     if (serverTimestamp > localTimestamp) {
@@ -1383,14 +1568,21 @@
                         
                         // Daca s-a schimbat ceva, re-render
                         if (oldList !== newList) {
-                            console.log('[SYNC DOWN] ✓ Date actualizate de pe server');
+                            console.log('[SYNC DOWN] ✓ Data updated from server!');
                             renderShoppingList();
                             updateStats();
+                            restoreCategoryStates();
+                        } else {
+                            console.log('[PULL] Server data is same');
                         }
+                    } else {
+                        console.log('[PULL] Local is current');
                     }
+                } else {
+                    console.log('[PULL] ✗ HTTP', response.status);
                 }
             } catch (e) {
-                console.log('[SYNC DOWN] ✗ Nu s-au putut trage date de pe server');
+                console.log('[SYNC DOWN] ✗ Error:', e.message);
             }
         }
 

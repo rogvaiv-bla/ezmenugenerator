@@ -1267,12 +1267,10 @@
                 // Remove from undo stack
                 undoStack = undoStack.filter(u => !(u.category === category && u.product === product));
                 
-                // Re-render and save
-                updateStats();
-                renderShoppingList();
-                restoreCategoryStates();
-                
                 console.log(`[UNDO] Restored ${product} in ${category}`);
+                
+                // Save to localStorage + sync to Redis
+                saveShoppingList();
                 
                 // Remove popup
                 const popup = document.querySelector('.undo-popup');

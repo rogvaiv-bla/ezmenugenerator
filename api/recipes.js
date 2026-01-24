@@ -10,7 +10,10 @@ const retetele = [
     { Nume: 'Creamy meatballs (chiftele în sos)', Ingrediente: ['🥩 carne tocată vită', '🌾 grâu', '🟢 mazare', '🧅 ceapă', '🧄 usturoi'], Proteina: 'carne roșie' },
     { Nume: 'Couscous cu piept de pui și legume', Ingrediente: ['🍗 piept de pui', '🥒 dovlecel', '🫑 ardei gras', '🌾 couscous'], Proteina: 'carne de pasare' },
     { Nume: 'Supă cremă dovleac', Ingrediente: ['🎃 dovleac', '🥛 smântână', '🧀 brânză', '🧄 usturoi', '🧅 ceapă'], Proteina: 'legume uscate' },
-    { Nume: 'Paste cu sos de pesto și ton', Ingrediente: ['🍝 paste', '🐟 ton din conservă', '🌿 pesto', '🧀 brânză dură', '🫒 ulei de masline'], Proteina: 'pește' }
+    { Nume: 'Paste cu sos de pesto și ton', Ingrediente: ['🍝 paste', '🐟 ton din conservă', '🌿 pesto', '🧀 brânză dură', '🫒 ulei de masline'], Proteina: 'pește' },
+    { Nume: 'Bors cu perișoare', Ingrediente: ['🍲 borsul', '🥚 ou', '🌿 mință', '🥩 carne tocată', '🍞 mie pâine', '🥔 cartofi', '🍄 ciuperci', '🍠 sfeclă'], Proteina: 'carne roșie' },
+    { Nume: 'Bors roșu (din sfeclă)', Ingrediente: ['🍠 sfeclă roșie', '🥩 carne de porc', '🍲 ciorba', '🥔 cartofi', '🧅 ceapă', '🧄 usturoi'], Proteina: 'carne roșie' },
+    { Nume: 'Gulaș cu carne de viță', Ingrediente: ['🥩 carne de viță cuburi', '🧅 ceapă', '🧄 usturoi', '🌶️ paprika', '🥔 cartofi', '🌶️ boia dulce', '🫒 ulei'], Proteina: 'carne roșie' }
 ];
 
 export default function handler(req, res) {

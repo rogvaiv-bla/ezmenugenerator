@@ -33,6 +33,9 @@ build/
 .venv
 __pycache__/
 *.pyc
+.DS_Store
+.DS_Store?
+*.swp~
 
 *.py[cod]
 *$py.class

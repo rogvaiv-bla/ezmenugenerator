@@ -9,8 +9,7 @@ const retetele = [
     { Nume: 'Chilly con carne cu orez', Ingrediente: ['🥩 carne de vită', '🫘 fasole boabe', '🧅 ceapă', '🍅 roșii', '🧄 usturoi', '🌶️ ardei', '🍚 orez'], Proteina: 'carne roșie' },
     { Nume: 'Creamy meatballs (chiftele în sos)', Ingrediente: ['🥩 carne tocată vită', '🌾 grâu', '🟢 mazare', '🧅 ceapă', '🧄 usturoi'], Proteina: 'carne roșie' },
     { Nume: 'Couscous cu piept de pui și legume', Ingrediente: ['🍗 piept de pui', '🥒 dovlecel', '🫑 ardei gras', '🌾 couscous'], Proteina: 'carne de pasare' },
-    { Nume: 'Supă cremă dovleac', Ingrediente: ['🎃 dovleac', '🥛 smântână', '🧀 brânză', '🧄 usturoi', '🧅 ceapă'], Proteina: 'legume uscate' },
-    { Nume: 'Paste cu sos de pesto și ton', Ingrediente: ['🍝 paste', '🐟 ton din conservă', '🌿 pesto', '🧀 brânză dură', '🫒 ulei de masline'], Proteina: 'pește' }
+    { Nume: 'Supă cremă dovleac', Ingrediente: ['🎃 dovleac', '🥛 smântână', '🧀 brânză', '🧄 usturoi', '🧅 ceapă'], Proteina: 'legume uscate' }
 ];
 
 export default function handler(req, res) {

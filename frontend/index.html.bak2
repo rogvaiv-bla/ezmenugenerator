@@ -2,7 +2,7 @@
 <html lang="ro">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ce Mănânc Azi?</title>
     <style>
         * {
@@ -61,7 +61,7 @@
             border-radius: 50px;
             cursor: pointer;
             transition: transform 0.3s, box-shadow 0.3s;
-            font-weight: 700;
+            font-weight: 600;
             box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
         }
 
@@ -283,7 +283,7 @@
             color: #999;
             border-bottom: 3px solid transparent;
             transition: all 0.3s;
-            font-weight: 700;
+            font-weight: 600;
             box-shadow: none;
             flex: 1;
             min-width: 150px;
@@ -364,12 +364,12 @@
             border: 1px solid rgba(255, 255, 255, 0.5);
             color: white;
             padding: 4px 12px;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 0.85em;
             transition: all 0.2s;
             white-space: nowrap;
-            font-weight: 700;
+            font-weight: 600;
         }
 
         .check-all-btn:hover {
@@ -474,7 +474,7 @@
             border: none;
             width: 32px;
             height: 32px;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
             font-size: 1.1em;
             display: flex;
@@ -493,21 +493,21 @@
         .quantity-display {
             min-width: 32px;
             text-align: center;
-            font-weight: 700;
+            font-weight: 600;
             color: #333;
             font-size: 0.9em;
             flex-shrink: 0;
         }
 
-        
-            background: #c41e3a;
+        .item-delete {
+            background: #d32f2f;
             color: white;
-            border: 3px solid #8b0000;
-            padding: 8px 16px;
-            border-radius: 6px;
+            border: 2px solid #b71c1c;
+            padding: 6px 12px;
+            border-radius: 4px;
             cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 700;
+            font-size: 0.8em;
+            font-weight: 600;
             transition: all 0.2s;
             flex-shrink: 0;
             white-space: nowrap;
@@ -515,9 +515,9 @@
         }
 
         .item-delete:hover {
-            background: #8b0000;
-            transform: scale(1.12);
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.6);
+            background: #b71c1c;
+            transform: scale(1.08);
+            box-shadow: 0 2px 8px rgba(211, 47, 47, 0.4);
         }
 
         .item-delete:active {
@@ -525,7 +525,7 @@
         }
 
         .item-delete:hover {
-            background: #a01030;
+            background: #ff5252;
         }
 
         .add-item-section {
@@ -562,7 +562,7 @@
             color: #00BCD4;
             border: 2px solid white;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             white-space: nowrap;
             box-shadow: none;
         }
@@ -609,9 +609,9 @@
             color: #ff5722;
             border: none;
             padding: 8px 16px;
-            border-radius: 6px;
+            border-radius: 4px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: background 0.2s;
             font-size: 0.9em;
         }
@@ -649,7 +649,7 @@
         }
 
         .stat-label {
-            font-size: 0.9em;
+            font-size: 0.8em;
             opacity: 0.9;
         }
 
@@ -739,7 +739,7 @@
                 font-size: 1em;
             }
 
-            
+            .item-delete {
                 padding: 4px 8px;
                 font-size: 0.75em;
             }
@@ -757,7 +757,7 @@
 
             .tab-btn {
                 padding: 8px 10px;
-                font-size: 0.9em;
+                font-size: 0.8em;
                 min-width: 100px;
             }
 
@@ -770,7 +770,7 @@
             }
 
             .stat {
-                
+                min-width: 80px;
                 padding: 8px 10px;
             }
 
@@ -789,15 +789,12 @@
                 font-size: 0.95em;
             }
 
-            
+            .item-delete {
                 padding: 3px 6px;
                 font-size: 0.7em;
             }
         }
-    
-    body { touch-action: manipulation; }
-    button { touch-action: manipulation; }
-</style>
+    </style>
 </head>
 <body>
     <div class="container">
@@ -835,7 +832,7 @@
                 </select>
                 <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Făină 4 kg)">
                 <button onclick="addProduct()">➕ Adaugă Produs</button>
-                <button onclick="generateShareLink()" style="background: #fff3e0; color: #ff9800; border: 2px solid #ff9800; margin-left: 8px; font-weight: 700;">🔗 Partajează Lista</button>
+                <button onclick="generateShareLink()" style="background: #fff3e0; color: #ff9800; border: 2px solid #ff9800; margin-left: 8px; font-weight: 600;">🔗 Partajează Lista</button>
             </div>
 
             <div class="stats" id="stats-container">
@@ -1184,7 +1181,7 @@
         // Crește cantitate
         function increaseQuantity(category, product) {
             if (typeof shoppingList[category][product] === 'object') {
-                if (product.toLowerCase() === "oua" || product.toLowerCase() === "ouă") { shoppingList[category][product].quantity += 5; } else { if (product.toLowerCase() === "oua" || product.toLowerCase() === "ouă") { shoppingList[category][product].quantity += 5; } else { shoppingList[category][product].quantity += 1; } }
+                shoppingList[category][product].quantity += 1;
             } else {
                 shoppingList[category][product] = { checked: false, quantity: 2 };
             }

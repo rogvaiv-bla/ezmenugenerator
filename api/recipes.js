@@ -11,10 +11,10 @@ const retetele = [
     { Nume: 'Couscous cu piept de pui și legume', Ingrediente: ['🍗 piept de pui', '🥒 dovlecel', '🫑 ardei gras', '🌾 couscous'], Proteina: 'carne de pasare' },
     { Nume: 'Supă cremă dovleac', Ingrediente: ['🎃 dovleac', '🥛 smântână', '🧀 brânză', '🧄 usturoi', '🧅 ceapă'], Proteina: 'legume uscate' },
     { Nume: 'Paste cu sos de pesto și ton', Ingrediente: ['🍝 paste', '🐟 ton din conservă', '🌿 pesto', '🧀 brânză dură'], Proteina: 'pește' },
-    { Nume: 'Bors cu perișoare', Ingrediente: ['🍲 borsul', '🥚 ou', '🌿 mință', '🥩 carne tocată', '🍞 mie pâine', '🥔 cartofi', '🍄 ciuperci', '🍠 sfeclă'], Proteina: 'carne roșie' },
+    { Nume: 'Bors cu perișoare', Ingrediente: ['🍲 borsul', '🥚 ou', '🌿 mință', '🥩 carne tocată', '🍞 pâine', '🥔 cartofi', '🍄 ciuperci', '🍠 sfeclă'], Proteina: 'carne roșie' },
     { Nume: 'Bors roșu (din sfeclă)', Ingrediente: ['🍠 sfeclă roșie', '🥩 carne de porc', '🍲 ciorba', '🥔 cartofi', '🧅 ceapă', '🧄 usturoi'], Proteina: 'carne roșie' },
     { Nume: 'Gulaș cu carne de vită', Ingrediente: ['🥩 carne de viță cuburi', '🧅 ceapă', '🧄 usturoi', '🌶️ paprika', '🥔 cartofi', '🌶️ boia dulce'], Proteina: 'carne roșie' },
-    { Nume: 'Vinete umplute cu carne tocată', Ingrediente: ['🍆 vinete', '🥩 carne tocată', '🍅 roșii', '🧅 ceapă', '🧄 usturoi', '🌿 mală', '🧅 ceapă'], Proteina: 'carne roșie' },
+    { Nume: 'Vinete umplute cu carne tocată', Ingrediente: ['🍆 vinete', '🥩 carne tocată', '🍅 roșii', '🧅 ceapă', '🧄 usturoi', '🌿 mărar'], Proteina: 'carne roșie' },
     { Nume: 'Somon cu cartofi la cuptor', Ingrediente: ['🐟 somon', '🥔 cartofi', '🍋 lămâie', '🧄 usturoi', '🌿 mărar', '🧈 unt'], Proteina: 'pește' },
     { Nume: 'Ardei umpluti cu carne și orez', Ingrediente: ['🫑 ardei gras', '🥩 carne tocată', '🍚 orez', '🍅 roșii', '🧅 ceapă', '🧄 usturoi', '🌿 pătrunjel'], Proteina: 'carne roșie' }
 ];

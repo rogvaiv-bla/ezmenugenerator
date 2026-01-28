@@ -861,6 +861,7 @@
         let recipesData = {}; 
         let expandedCard = null;
         let shoppingList = {};
+        let previousMenuRecipes = new Set(); // Tracker pentru rețete afișate anterior
 
         // Inițializare lista de cumpărături - structura noua cu cantitate
         const defaultShoppingList = {
@@ -1405,6 +1406,14 @@
             
             // Start periodic sync (every 5 seconds)
             setInterval(pullFromServer, 5000);
+
+            // Add Space key listener for menu generation
+            document.addEventListener('keyup', function(e) {
+                if (e.code === 'Space' && document.getElementById('menu-tab').style.display !== 'none') {
+                    e.preventDefault();
+                    generateMenu();
+                }
+            });
         });
 
         // Schimbă tab
@@ -1472,9 +1481,7 @@
             expandedCard = null;
 
             try {
-                const response = await fetch('/api/menu');
-                const menu = await response.json();
-                
+                // Fetch recipes
                 const recipesResponse = await fetch('/api/recipes');
                 const recipes = await recipesResponse.json();
                 
@@ -1482,6 +1489,15 @@
                 recipes.forEach(recipe => {
                     recipesData[recipe.Nume] = recipe.Ingrediente;
                 });
+
+                // Generate menu locally with exclusion of previous recipes
+                const menu = generateLocalMenu(recipes);
+                
+                // Update previousMenuRecipes tracker
+                previousMenuRecipes.clear();
+                for (let day = 1; day <= 7; day++) {
+                    previousMenuRecipes.add(menu[day]);
+                }
 
                 let menuHTML = '';
                 for (let day = 1; day <= 7; day++) {
@@ -1522,6 +1538,60 @@
                 loading.classList.remove('active');
                 generateBtn.disabled = false;
             }
+        }
+
+        // Generează meniu local cu exclusion de rețete anterioare
+        function generateLocalMenu(retete) {
+            const freqLimits = {
+                'carne roșie': 1,
+                'carne de pasare': 2,
+                'pește': 2,
+                'ouă': 5,
+                'ouă (și mezeluri)': 5,
+                'mezeluri': 0.5,
+                'legume uscate': 2,
+            };
+
+            const counters = {};
+            const menu = {};
+            const usedRecipes = new Set(previousMenuRecipes); // Exclude previous recipes
+
+            for (let day = 1; day <= 7; day++) {
+                // Filtrează rețete disponibile (exclude cele utilizate anterior)
+                const available = retete.filter(r => 
+                    !usedRecipes.has(r.Nume) && canUseRecipe(r, counters, freqLimits)
+                );
+
+                if (available.length === 0) {
+                    menu[day] = 'Nicio rețetă disponibilă';
+                    continue;
+                }
+
+                const recipe = available[Math.floor(Math.random() * available.length)];
+                menu[day] = recipe.Nume;
+                usedRecipes.add(recipe.Nume);
+
+                const prot = recipe.Proteina.toLowerCase();
+                if (prot in counters) {
+                    counters[prot] += 1;
+                } else {
+                    counters[prot] = 1;
+                }
+            }
+
+            return menu;
+        }
+
+        // Helper: check if recipe can be used based on frequency limits
+        function canUseRecipe(recipe, counters, freqLimits) {
+            const prot = recipe.Proteina.toLowerCase();
+            if (prot in freqLimits) {
+                const count = counters[prot] || 0;
+                if (count >= freqLimits[prot]) {
+                    return false;
+                }
+            }
+            return true;
         }
 
         // Generează ID unic pentru partajare

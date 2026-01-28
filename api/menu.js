@@ -1,5 +1,5 @@
 const retetele = [
-    { Nume: 'Pui copt cu cartofi la cuptor și legume', Ingrediente: ['🍗 pui', '🥔 cartofi', '🥕 morcovi', '🥦 broccoli', '� usturoi'], Proteina: 'carne de pasare' },
+    { Nume: 'Pui copt cu cartofi la cuptor și legume', Ingrediente: ['🍗 pui', '🥔 cartofi', '🥕 morcovi', '🥦 broccoli', '🧄 usturoi'], Proteina: 'carne de pasare' },
     { Nume: 'Somon la cuptor cu legume', Ingrediente: ['🐟 somon', '🥕 morcovi', '🥦 broccoli', '🍠 cartofi dulci'], Proteina: 'pește' },
     { Nume: 'Paste Carbonara', Ingrediente: ['🍝 paste', '🥚 ouă', '🥓 bacon', '🧀 brânză dură', '🌶️ piper'], Proteina: 'ouă (și mezeluri)' },
     { Nume: 'Cotlet de pui la cuptor cu orez', Ingrediente: ['🍗 pui', '🍚 orez', '🥦 broccoli', '🥕 morcovi'], Proteina: 'carne de pasare' },
@@ -13,7 +13,10 @@ const retetele = [
     { Nume: 'Paste cu sos de pesto și ton', Ingrediente: ['🍝 paste', '🐟 ton din conservă', '🌿 pesto', '🧀 brânză dură'], Proteina: 'pește' },
     { Nume: 'Bors cu perișoare', Ingrediente: ['🍲 borsul', '🥚 ou', '🌿 mință', '🥩 carne tocată', '🍞 mie pâine', '🥔 cartofi', '🍄 ciuperci', '🍠 sfeclă'], Proteina: 'carne roșie' },
     { Nume: 'Bors roșu (din sfeclă)', Ingrediente: ['🍠 sfeclă roșie', '🥩 carne de porc', '🍲 ciorba', '🥔 cartofi', '🧅 ceapă', '🧄 usturoi'], Proteina: 'carne roșie' },
-    { Nume: 'Gulaș cu carne de viță', Ingrediente: ['🥩 carne de viță cuburi', '🧅 ceapă', '🧄 usturoi', '🌶️ paprika', '🥔 cartofi', '🌶️ boia dulce'], Proteina: 'carne roșie' }
+    { Nume: 'Gulaș cu carne de viță', Ingrediente: ['🥩 carne de viță cuburi', '🧅 ceapă', '🧄 usturoi', '🌶️ paprika', '🥔 cartofi', '🌶️ boia dulce'], Proteina: 'carne roșie' },
+    { Nume: 'Vinete umplute cu carne tocată', Ingrediente: ['🍆 vinete', '🥩 carne tocată', '🍅 roșii', '🧅 ceapă', '🧄 usturoi', '🌿 mală', '🧅 ceapă'], Proteina: 'carne roșie' },
+    { Nume: 'Somon cu cartofi la cuptor', Ingrediente: ['🐟 somon', '🥔 cartofi', '🍋 lămâie', '🧄 usturoi', '🌿 mărar', '🧈 unt'], Proteina: 'pește' },
+    { Nume: 'Ardei umpluti cu carne și orez', Ingrediente: ['🫑 ardei gras', '🥩 carne tocată', '🍚 orez', '🍅 roșii', '🧅 ceapă', '🧄 usturoi', '🌿 pătrunjel'], Proteina: 'carne roșie' }
 ];
 
 function generateWeeklyMenu(retete) {

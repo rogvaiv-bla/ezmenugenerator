@@ -21,13 +21,13 @@ const retetele = [
 
 function generateWeeklyMenu(retete) {
     const freqLimits = {
-        'carne roșie': 1,
+        'carne roșie': 2,
         'carne de pasare': 2,
         'pește': 2,
         'ouă': 5,
         'ouă (și mezeluri)': 5,
-        'mezeluri': 0.5,
-        'legume uscate': 2,
+        'mezeluri': 5,
+        'legume uscate': 5,
     };
 
     const counters = {};

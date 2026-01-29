@@ -1074,22 +1074,36 @@
         .profile-buttons .danger:hover {
             background: #b30012;
         }
+
+        /* Top header bar layout fix */
+        #headerBar {
+            position: fixed;
+            top: 0;
+            right: 0;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            padding: 15px 20px;
+            background: white;
+            border-bottom: 1px solid #e5e5e7;
+            z-index: 100;
+        }
     </style>
 </style>
     <!-- jsPDF library for PDF export -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
-        <!-- User Button -->
-        <button class="user-button" id="userButton" onclick="toggleLoginModal()">👤 Login</button>
-
-        <!-- Language Selector -->
-        <div style="position: absolute; top: 20px; right: 30px; z-index: 100;">
-            <select id="languageSelect" onchange="setLanguage(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #d5d5d7; font-size: 0.9em; cursor: pointer; background: white;">
+        <!-- Top Header Bar -->
+        <div id="headerBar">
+            <!-- Language Selector -->
+            <select id="languageSelect" onchange="setLanguage(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #d5d5d7; font-size: 0.9em; cursor: pointer; background: white; white-space: nowrap;" title="Alege limba">
                 <option value="ro">🇷🇴 Română</option>
                 <option value="en">🇬🇧 English</option>
                 <option value="fr">🇫🇷 Français</option>
             </select>
+            <!-- User Button -->
+            <button class="user-button" id="userButton" onclick="toggleLoginModal()" style="white-space: nowrap;">👤 Login</button>
         </div>
 
         <!-- Auth Modal -->
@@ -2658,21 +2672,35 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                 const margins = 20;
                 const maxWidth = doc.internal.pageSize.width - (2 * margins);
 
+                // Helper function to remove diacritics
+                const cleanText = (text) => {
+                    const map = {
+                        'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ū': 'u',
+                        'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
+                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a',
+                        'ñ': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o',
+                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y'
+                    };
+                    return text.replace(/[ăâîșțūĂÂÎȘȚéèêëàáäåñóôöøùúüýÿ]/g, char => map[char] || char);
+                };
+
                 // Header
-                doc.setFontSize(20);
-                doc.text('🍽️ MENU SĂPTĂMÂNAL', margins, yPosition);
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('MENU SAPTAMANAL', margins, yPosition);
                 yPosition += 12;
 
                 // Date info
                 doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
                 doc.setTextColor(100, 100, 100);
-                const today = new Date().toLocaleDateString('ro-RO', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                doc.text(`Generat pe: ${today}`, margins, yPosition);
+                const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'];
+                const months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+                               'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+                const now = new Date();
+                const dateStr = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+                doc.text(`Generat pe: ${dateStr}`, margins, yPosition);
                 yPosition += 8;
 
                 // User info if logged in
@@ -2681,7 +2709,8 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                     doc.text(`Utilizator: ${currentUser.email}`, margins, yPosition);
                     yPosition += 5;
                     if (userPreferences.dietType !== 'balanced') {
-                        doc.text(`Dietă: ${userPreferences.dietType}`, margins, yPosition);
+                        const dietMap = { 'vegetarian': 'Vegetarian', 'vegan': 'Vegan', 'keto': 'Keto' };
+                        doc.text(`Dieta: ${dietMap[userPreferences.dietType] || userPreferences.dietType}`, margins, yPosition);
                         yPosition += 5;
                     }
                     if (userPreferences.allergies.length > 0) {
@@ -2723,14 +2752,17 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                     // Recipe name
                     doc.setFont(undefined, 'normal');
                     doc.setFontSize(10);
-                    const recipeLines = doc.splitTextToSize(recipeName, maxWidth - 10);
+                    doc.setTextColor(0, 113, 227);
+                    const cleanRecipeName = cleanText(recipeName);
+                    const recipeLines = doc.splitTextToSize(cleanRecipeName, maxWidth - 10);
                     doc.text(recipeLines, margins + 5, yPosition);
                     yPosition += (recipeLines.length * 5) + 2;
 
                     // Ingredients
                     doc.setFontSize(9);
                     doc.setTextColor(100, 100, 100);
-                    const ingredientLines = doc.splitTextToSize(ingredients, maxWidth - 10);
+                    const cleanIngredients = cleanText(ingredients);
+                    const ingredientLines = doc.splitTextToSize(cleanIngredients, maxWidth - 10);
                     doc.text(ingredientLines, margins + 5, yPosition);
                     yPosition += (ingredientLines.length * 4) + 5;
 
@@ -2756,14 +2788,36 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                 const margins = 20;
                 const maxWidth = doc.internal.pageSize.width - (2 * margins);
 
+                // Helper function to remove diacritics
+                const cleanText = (text) => {
+                    const map = {
+                        'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ū': 'u',
+                        'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
+                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
+                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a',
+                        'ñ': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o',
+                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y'
+                    };
+                    return text.replace(/[ăâîșțūĂÂÎȘȚéèêëàáäåñóôöøùúüýÿ]/g, char => map[char] || char);
+                };
+
                 // Header
-                doc.setFontSize(20);
-                doc.text('🛒 LISTA DE CUMPĂRĂTURI', margins, yPosition);
+                doc.setFontSize(16);
+                doc.setFont(undefined, 'bold');
+                doc.text('LISTA DE CUMPARATURI', margins, yPosition);
                 yPosition += 12;
 
                 // Date info
                 doc.setFontSize(10);
+                doc.setFont(undefined, 'normal');
                 doc.setTextColor(100, 100, 100);
+                const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'];
+                const months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
+                               'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+                const now = new Date();
+                const dateStr = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
+                doc.text(`Generat pe: ${dateStr}`, margins, yPosition);
+                yPosition += 8;
                 const today = new Date().toLocaleDateString('ro-RO', { 
                     weekday: 'long', 
                     year: 'numeric', 
@@ -2782,7 +2836,7 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                 }, 0);
 
                 doc.setFontSize(10);
-                doc.text(`Total: ${totalItems} produse | Cumpărate: ${checkedItems}`, margins, yPosition);
+                doc.text(`Total: ${totalItems} produse | Cumparate: ${checkedItems}`, margins, yPosition);
                 yPosition += 8;
 
                 doc.setDrawColor(200, 200, 200);
@@ -2800,11 +2854,12 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                         yPosition = margins;
                     }
 
-                    // Category header
+                    // Category header - clean text without diacritics
+                    const cleanCategory = cleanText(category);
                     doc.setFontSize(11);
                     doc.setFont(undefined, 'bold');
                     doc.setTextColor(0, 113, 227); // Blue
-                    doc.text(category, margins, yPosition);
+                    doc.text(cleanCategory, margins, yPosition);
                     yPosition += 8;
 
                     doc.setFont(undefined, 'normal');
@@ -2821,12 +2876,13 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                             yPosition = margins;
                         }
 
-                        // Checkbox symbol
-                        const checkMark = isChecked ? '☑️' : '☐';
+                        // Checkbox symbol and clean product name
+                        const checkMark = isChecked ? '[X]' : '[ ]';
+                        const cleanProduct = cleanText(product);
                         const textColor = isChecked ? [150, 150, 150] : [0, 0, 0];
                         doc.setTextColor(...textColor);
 
-                        const itemText = `${checkMark} ${product} (x${quantity})`;
+                        const itemText = `${checkMark} ${cleanProduct} (x${quantity})`;
                         const lines = doc.splitTextToSize(itemText, maxWidth - 10);
                         doc.text(lines, margins + 5, yPosition);
                         yPosition += (lines.length * 4) + 2;

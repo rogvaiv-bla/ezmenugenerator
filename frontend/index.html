@@ -868,6 +868,15 @@
 </style>
 </head>
 <body>
+        <!-- Language Selector -->
+        <div style="position: absolute; top: 20px; right: 30px; z-index: 100;">
+            <select id="languageSelect" onchange="setLanguage(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #d5d5d7; font-size: 0.9em; cursor: pointer; background: white;">
+                <option value="ro">🇷🇴 Română</option>
+                <option value="en">🇬🇧 English</option>
+                <option value="fr">🇫🇷 Français</option>
+            </select>
+        </div>
+
     <div class="container">
         <div class="header">
             <h1>🍽️ CE MĂNÂNC AZI?</h1>
@@ -926,10 +935,93 @@
     </div>
 
     <script>
+        // Translation system
+        const translations = {
+            ro: {
+                title: '🍽️ CE MĂNÂNC AZI?',
+                subtitle: 'Generează meniul tău săptămânal & gestionează cumpărăturile',
+                menuTab: '📅 Menu Săptămânal',
+                shoppingTab: '🛒 Lista de Cumpărături',
+                generateBtn: 'GENEREAZĂ MENIU',
+                loading: '⏳ Se generează meniu...',
+                selectCategory: 'Selectează categorie...',
+                addProduct: 'Introduceți produsul nou (ex: Făină 4 kg)',
+                addBtn: '➕ Adaugă Produs',
+                shareBtn: '🔗 Partajează Lista',
+                totalItems: 'Produse Total',
+                checkedItems: 'Cumpărate',
+                remainingItems: 'Rămase',
+                ingredientsAvailable: '📦 Ingrediente:',
+                noIngredients: 'Nicio ingredientă disponibilă'
+            },
+            en: {
+                title: '🍽️ WHAT AM I EATING TODAY?',
+                subtitle: 'Generate your weekly menu & manage your shopping list',
+                menuTab: '📅 Weekly Menu',
+                shoppingTab: '🛒 Shopping List',
+                generateBtn: 'GENERATE MENU',
+                loading: '⏳ Generating menu...',
+                selectCategory: 'Select category...',
+                addProduct: 'Enter new product (ex: Flour 4 kg)',
+                addBtn: '➕ Add Product',
+                shareBtn: '🔗 Share List',
+                totalItems: 'Total Products',
+                checkedItems: 'Purchased',
+                remainingItems: 'Remaining',
+                ingredientsAvailable: '📦 Ingredients:',
+                noIngredients: 'No ingredients available'
+            },
+            fr: {
+                title: '🍽️ QUE VAIS-JE MANGER AUJOURD\'HUI?',
+                subtitle: 'Générez votre menu hebdomadaire & gérez votre liste d\'achat',
+                menuTab: '📅 Menu Hebdomadaire',
+                shoppingTab: '🛒 Liste d\'Achat',
+                generateBtn: 'GÉNÉRER LE MENU',
+                loading: '⏳ Génération du menu...',
+                selectCategory: 'Sélectionner une catégorie...',
+                addProduct: 'Entrez un nouveau produit (ex: Farine 4 kg)',
+                addBtn: '➕ Ajouter Produit',
+                shareBtn: '🔗 Partager la Liste',
+                totalItems: 'Total Produits',
+                checkedItems: 'Achetés',
+                remainingItems: 'Restants',
+                ingredientsAvailable: '📦 Ingrédients:',
+                noIngredients: 'Aucun ingrédient disponible'
+            }
+        };
+
+        let currentLang = localStorage.getItem('language') || 'ro';
+        let t = translations[currentLang];
+
         let recipesData = {}; 
         let expandedCard = null;
         let shoppingList = {};
         let previousMenuRecipes = new Set(); // Tracker pentru rețete afișate anterior
+
+        function setLanguage(lang) {
+            currentLang = lang;
+            t = translations[lang];
+            localStorage.setItem('language', lang);
+            updateAllText();
+            renderShoppingList();
+        }
+
+        function updateAllText() {
+            document.querySelector('.header h1').textContent = t.title;
+            document.querySelector('.header p').textContent = t.subtitle;
+            document.querySelectorAll('.tab-btn')[0].textContent = t.menuTab;
+            document.querySelectorAll('.tab-btn')[1].textContent = t.shoppingTab;
+            document.getElementById('generateBtn').textContent = t.generateBtn;
+            document.getElementById('loading').textContent = t.loading;
+            document.getElementById('categorySelect').innerHTML = `<option value="">${t.selectCategory}</option>`;
+            document.getElementById('productInput').placeholder = t.addProduct;
+            document.querySelectorAll('.add-item-section button')[0].textContent = t.addBtn;
+            document.querySelectorAll('.add-item-section button')[1].textContent = t.shareBtn;
+            document.querySelectorAll('.stat-label')[0].textContent = t.totalItems;
+            document.querySelectorAll('.stat-label')[1].textContent = t.checkedItems;
+            document.querySelectorAll('.stat-label')[2].textContent = t.remainingItems;
+            populateCategorySelect();
+        }
 
         // Inițializare lista de cumpărături - structura noua cu cantitate
         const defaultShoppingList = {
@@ -1111,6 +1203,13 @@
             let html = '';
 
             for (const [category, items] of Object.entries(shoppingList)) {
+                // Sort items: unchecked first, then checked
+                const sortedItems = Object.entries(items).sort((a, b) => {
+                    const aChecked = typeof a[1] === 'object' ? a[1].checked : a[1];
+                    const bChecked = typeof b[1] === 'object' ? b[1].checked : b[1];
+                    return aChecked - bChecked; // unchecked (false=0) comes before checked (true=1)
+                });
+
                 const itemCount = Object.keys(items).length;
                 const checkedCount = Object.values(items).filter(item => {
                     return typeof item === 'object' ? item.checked : item;
@@ -1120,10 +1219,8 @@
                 // Separează emoji din categoria
                 let categoryText = category;
                 let emoji = '';
-                // Detectează daca prima parte e emoji (încă din textul original ca "🥬 Legume")
                 for (let i = 0; i < category.length; i++) {
                     const char = category[i];
-                    // Verifică daca e emoji
                     const code = char.charCodeAt(0);
                     if (code > 127 || /\p{Emoji}/u.test(char)) {
                         emoji += char;
@@ -1143,12 +1240,12 @@
                             <span class="toggle-icon">▶️</span>
                             <span class="category-name">${categoryText} ${emoji}</span>
                             <span class="category-count">${checkedCount}/${itemCount}</span>
-                            <button class="check-all-btn" onclick="toggleCategoryAll(event, '${category}')" style="margin-left: auto;">
+                            <button class="check-all-btn" onclick="toggleCategoryAll(event, '${category}')">
                                 ${allChecked ? '✓ Deselectează' : '☐ Selectează'}
                             </button>
                         </div>
                         <div class="category-items">
-                            ${Object.entries(items).map(([product, data]) => {
+                            ${sortedItems.map(([product, data]) => {
                                 const isChecked = typeof data === 'object' ? data.checked : data;
                                 const quantity = typeof data === 'object' ? data.quantity : 1;
                                 return `

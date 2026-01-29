@@ -12,219 +12,235 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Helvetica Neue', sans-serif;
+            background: #f5f5f7;
             min-height: 100vh;
             display: flex;
             justify-content: center;
-            align-items: center;
-            padding: 20px;
+            align-items: flex-start;
+            padding: 0;
         }
 
         .container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            padding: 40px;
-            max-width: 900px;
             width: 100%;
+            max-width: 1000px;
+            padding: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            box-shadow: none;
+            border-radius: 0;
         }
 
         .header {
             text-align: center;
-            margin-bottom: 40px;
+            padding: 60px 30px 40px;
+            background: white;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .header h1 {
-            font-size: 3em;
-            color: #333;
-            margin-bottom: 10px;
+            font-size: 2.5em;
+            color: #1d1d1f;
+            margin-bottom: 8px;
             font-weight: 700;
+            letter-spacing: -0.5px;
         }
 
         .header p {
-            font-size: 1.1em;
-            color: #666;
+            font-size: 1em;
+            color: #86868b;
+            font-weight: 400;
+            line-height: 1.6;
         }
 
         .button-container {
             text-align: center;
-            margin-bottom: 40px;
+            padding: 30px 20px;
+            background: white;
         }
 
         button {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #0071e3;
             color: white;
             border: none;
-            padding: 15px 60px;
-            font-size: 1.1em;
-            border-radius: 50px;
+            padding: 12px 50px;
+            font-size: 1em;
+            border-radius: 10px;
             cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-            font-weight: 700;
-            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+            transition: background 0.2s, transform 0.2s;
+            font-weight: 500;
+            box-shadow: none;
+            letter-spacing: -0.3px;
         }
 
         button:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 40px rgba(102, 126, 234, 0.6);
+            background: #0077ed;
+            transform: none;
         }
 
         button:active {
-            transform: translateY(-1px);
+            background: #0064d2;
+            transform: scale(0.98);
+        }
+
+        button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
 
         .menu-container {
             display: none;
+            flex: 1;
         }
 
         .menu-container.active {
             display: block;
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.3s ease-in;
         }
 
         @keyframes fadeIn {
             from {
                 opacity: 0;
-                transform: translateY(10px);
             }
             to {
                 opacity: 1;
-                transform: translateY(0);
             }
         }
 
         .menu-grid {
             display: flex;
             flex-direction: column;
-            gap: 16px;
-            margin-top: 30px;
+            gap: 0;
+            padding: 0;
         }
 
         .day-card {
-            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: #f5f5f7;
+            border-bottom: 1px solid #e5e5e7;
+            padding: 20px 30px;
+            box-shadow: none;
             cursor: pointer;
-            border: 2px solid transparent;
+            border: none;
+            transition: background 0.2s;
+            border-radius: 0;
         }
 
         .day-card:hover {
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+            background: #efefef;
+            box-shadow: none;
         }
 
         .day-card.show-ingredients {
-            background: linear-gradient(135deg, #e8f5e9 0%, #f1f8e9 100%);
-            border-color: #81c784;
-            padding: 24px;
-            box-shadow: 0 8px 24px rgba(129, 199, 132, 0.2);
+            background: #f9f9fb;
+            padding: 24px 30px;
+            box-shadow: none;
+            border: none;
+        }
+
+        .day-card.show-ingredients:hover {
+            background: #f9f9fb;
         }
 
         .day-card.today {
-            background: linear-gradient(135deg, #fff3e0 0%, #ffe0b2 100%);
-            border-color: #ffb74d;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            border: none;
         }
 
         .day-card.today:hover {
-            box-shadow: 0 4px 12px rgba(255, 179, 71, 0.2);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         }
 
         .day-card.today.show-ingredients {
-            background: linear-gradient(135deg, #fff8e1 0%, #ffecb3 100%);
-            border-color: #fbc02d;
-            box-shadow: 0 8px 24px rgba(251, 192, 45, 0.2);
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
         }
 
         .day-number {
-            font-size: 0.85em;
-            color: #5a6c7d;
-            font-weight: 700;
+            font-size: 0.75em;
+            color: #86868b;
+            font-weight: 600;
             text-transform: uppercase;
-            margin-bottom: 8px;
-            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+            letter-spacing: 0.3px;
         }
 
         .day-card.today .day-number {
-            color: #d84315;
+            color: #b45309;
         }
 
         .recipe-name {
-            font-size: 1.25em;
-            color: #1a237e;
-            font-weight: 700;
-            line-height: 1.5;
+            font-size: 1.2em;
+            color: #1d1d1f;
+            font-weight: 600;
+            line-height: 1.4;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: color 0.2s;
             text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: space-between;
+            letter-spacing: -0.3px;
         }
 
         .recipe-name:hover {
-            color: #0d47a1;
-            transition: none;
+            color: #0071e3;
         }
 
         .day-card.today .recipe-name {
-            color: #d84315;
+            color: #92400e;
         }
 
         .day-card.today .recipe-name:hover {
-            color: #bf360c;
+            color: #78350f;
         }
 
         .search-icon {
             display: inline-block;
             margin-left: 8px;
             font-size: 1.1em;
-            opacity: 0.7;
-            transition: none;
+            opacity: 0.5;
+            transition: opacity 0.2s;
         }
 
         .recipe-name:hover .search-icon {
-            opacity: 0.7;
+            opacity: 0.8;
         }
 
         .ingredients-container {
             display: none;
-            margin-top: 16px;
-            padding-top: 16px;
-            border-top: 2px solid rgba(0, 0, 0, 0.08);
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid rgba(0, 0, 0, 0.06);
         }
 
         .ingredients-container.active {
             display: block;
-            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            animation: slideDown 0.2s ease-out;
         }
 
         @keyframes slideDown {
             from {
                 opacity: 0;
                 transform: translateY(-8px);
-                max-height: 0;
             }
             to {
                 opacity: 1;
                 transform: translateY(0);
-                max-height: 800px;
             }
         }
 
         .ingredients-title {
-            font-size: 1em;
-            font-weight: 700;
-            color: #2e7d32;
-            margin-bottom: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            font-size: 0.95em;
-            letter-spacing: 0.3px;
+            letter-spacing: 0.5px;
         }
 
         .day-card.today .ingredients-title {
-            color: #d84315;
+            color: #92400e;
         }
 
         .ingredients-list {
@@ -233,33 +249,34 @@
         }
 
         .ingredients-list li {
-            font-size: 0.95em;
-            color: #37474f;
-            padding: 8px 0;
-            padding-left: 24px;
+            font-size: 0.9em;
+            color: #555;
+            padding: 4px 0;
+            padding-left: 20px;
             position: relative;
-            font-weight: 500;
-            line-height: 1.4;
+            font-weight: 400;
+            line-height: 1.5;
         }
 
         .ingredients-list li:before {
-            content: "✓";
+            content: "•";
             position: absolute;
-            left: 4px;
-            color: #2e7d32;
+            left: 0;
+            color: #0071e3;
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em;
         }
 
         .day-card.today .ingredients-list li:before {
-            color: #d84315;
+            color: #b45309;
         }
 
         .loading {
             text-align: center;
-            font-size: 1.1em;
-            color: #667eea;
+            font-size: 1em;
+            color: #86868b;
             display: none;
+            padding: 40px;
         }
 
         .loading.active {
@@ -269,76 +286,87 @@
         /* Taburi navigație */
         .tabs-container {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            border-bottom: 3px solid #e0e0e0;
-            flex-wrap: wrap;
+            gap: 0;
+            margin-bottom: 0;
+            border-bottom: 1px solid #e5e5e7;
+            flex-wrap: nowrap;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
         }
 
         .tab-btn {
             background: none;
             border: none;
-            padding: 12px 16px;
-            font-size: 0.95em;
+            padding: 16px 24px;
+            font-size: 1em;
             cursor: pointer;
-            color: #999;
+            color: #86868b;
             border-bottom: 3px solid transparent;
-            transition: all 0.3s;
-            font-weight: 700;
+            transition: color 0.2s, border-color 0.2s;
+            font-weight: 500;
             box-shadow: none;
             flex: 1;
-            min-width: 150px;
+            min-width: auto;
+            white-space: nowrap;
+            letter-spacing: -0.3px;
         }
 
         .tab-btn:hover {
-            color: #00BCD4;
+            color: #1d1d1f;
             transform: none;
             box-shadow: none;
         }
 
         .tab-btn.active {
-            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
-            color: white;
-            border-radius: 8px 8px 0 0;
-            border-bottom-color: transparent;
+            background: none;
+            color: #0071e3;
+            border-radius: 0;
+            border-bottom: 3px solid #0071e3;
         }
 
         /* Shopping List Styles */
         .shopping-list-container {
             display: none;
+            flex: 1;
+            padding: 0;
         }
 
         .shopping-list-container.active {
             display: block;
-            animation: fadeIn 0.5s ease-in;
+            animation: fadeIn 0.3s ease-in;
         }
 
         .category {
-            margin-bottom: 28px;
+            margin-bottom: 0;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .category-header {
             display: flex;
             align-items: center;
             cursor: pointer;
-            padding: 12px;
-            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
-            color: white;
-            border-radius: 8px;
-            margin-bottom: 12px;
-            transition: all 0.3s;
+            padding: 16px 30px;
+            background: white;
+            color: #1d1d1f;
+            border-radius: 0;
+            margin-bottom: 0;
+            transition: background 0.2s;
             user-select: none;
+            border: none;
         }
 
         .category-header:hover {
-            transform: translateX(5px);
-            box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+            background: #f5f5f7;
+            transform: none;
+            box-shadow: none;
         }
 
         .category-header .toggle-icon {
-            font-size: 1.2em;
+            font-size: 1em;
             margin-right: 12px;
-            transition: transform 0.3s;
+            transition: transform 0.2s;
         }
 
         .category-header.collapsed .toggle-icon {
@@ -346,49 +374,53 @@
         }
 
         .category-name {
-            font-weight: 700;
-            font-size: 1.05em;
+            font-weight: 600;
+            font-size: 1em;
             flex-grow: 1;
+            letter-spacing: -0.3px;
         }
 
         .category-count {
-            background: rgba(255, 255, 255, 0.3);
+            background: #f5f5f7;
             padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9em;
+            border-radius: 6px;
+            font-size: 0.85em;
             margin-left: auto;
             margin-right: 12px;
+            color: #86868b;
+            font-weight: 500;
         }
 
         .check-all-btn {
-            background: rgba(255, 255, 255, 0.2);
-            border: 1px solid rgba(255, 255, 255, 0.5);
-            color: white;
-            padding: 4px 12px;
+            background: #f5f5f7;
+            border: none;
+            color: #0071e3;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
             font-size: 0.85em;
-            transition: all 0.2s;
+            transition: background 0.2s;
             white-space: nowrap;
-            font-weight: 700;
+            font-weight: 500;
         }
 
         .check-all-btn:hover {
-            background: rgba(255, 255, 255, 0.3);
-            border-color: white;
+            background: #efefef;
+            border-color: transparent;
         }
 
         .category-items {
             display: flex;
             flex-direction: column;
-            gap: 10px;
-            padding-left: 20px;
+            gap: 0;
+            padding-left: 0;
             max-height: 70vh;
             overflow-y: auto;
             overflow-x: hidden;
-            padding-right: 8px;
+            padding-right: 0;
             transition: opacity 0.2s ease-out;
             opacity: 1;
+            background: #f9f9fb;
         }
 
         .category-items.collapsed {
@@ -398,7 +430,7 @@
             transition: opacity 0.2s ease-out, max-height 0s linear 0.2s;
         }
 
-        /* Scrollbar styling for better mobile experience */
+        /* Scrollbar styling */
         .category-items::-webkit-scrollbar {
             width: 6px;
         }
@@ -408,35 +440,37 @@
         }
 
         .category-items::-webkit-scrollbar-thumb {
-            background: #ddd;
+            background: #d5d5d7;
             border-radius: 3px;
         }
 
         .category-items::-webkit-scrollbar-thumb:hover {
-            background: #999;
+            background: #a1a1a6;
         }
 
         .item {
             display: flex;
             align-items: center;
             gap: 12px;
-            padding: 12px;
-            background: #f8f9fa;
-            border-radius: 6px;
-            transition: all 0.2s;
+            padding: 12px 30px;
+            background: #f9f9fb;
+            border-radius: 0;
+            transition: background 0.2s;
             min-height: 48px;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .item:hover {
-            background: #e9ecef;
+            background: #f5f5f7;
         }
 
         .item input[type="checkbox"] {
             width: 20px;
             height: 20px;
             cursor: pointer;
-            accent-color: #00BCD4;
+            accent-color: #0071e3;
             flex-shrink: 0;
+            border-radius: 4px;
         }
 
         .item-name {
@@ -445,11 +479,12 @@
             color: #333;
             font-weight: 500;
             word-break: break-word;
+            font-size: 0.95em;
         }
 
         .item input[type="checkbox"]:checked ~ .item-name {
             text-decoration: line-through;
-            color: #999;
+            color: #a1a1a6;
         }
 
         .item-controls {
@@ -459,25 +494,25 @@
             flex-shrink: 0;
             margin-left: auto;
             padding-left: 12px;
-            border-left: 2px solid #ddd;
+            border-left: none;
         }
 
         .quantity-controls {
             display: flex;
             align-items: center;
-            gap: 4px;
+            gap: 8px;
             flex-shrink: 0;
         }
 
         .quantity-btn {
-            background: #00BCD4;
-            color: white;
-            border: none;
+            background: white;
+            color: #0071e3;
+            border: 1px solid #d5d5d7;
             width: 32px;
             height: 32px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 1.1em;
+            font-size: 1em;
             display: flex;
             align-items: center;
             justify-content: center;
@@ -487,100 +522,93 @@
         }
 
         .quantity-btn:hover {
-            background: #0097A7;
-            transform: scale(1.05);
+            background: #f5f5f7;
+            border-color: #0071e3;
         }
 
         .quantity-display {
             min-width: 32px;
             text-align: center;
-            font-weight: 700;
+            font-weight: 600;
             color: #333;
             font-size: 0.9em;
             flex-shrink: 0;
         }
 
         .item-delete {
-            background: #c41e3a;
-            color: white;
-            border: 3px solid #8b0000;
-            padding: 8px 16px;
+            background: white;
+            color: #d70015;
+            border: 1px solid #d70015;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
-            font-size: 0.9em;
-            font-weight: 700;
+            font-size: 0.85em;
+            font-weight: 500;
             transition: all 0.2s;
             flex-shrink: 0;
             white-space: nowrap;
-            position: relative;
         }
 
         .item-delete:hover {
-            background: #8b0000;
-            transform: scale(1.12);
-            box-shadow: 0 4px 12px rgba(139, 0, 0, 0.6);
-        }
-
-        .item-delete:active {
-            transform: scale(0.96);
-        }
-
-        .item-delete:hover {
-            background: #a01030;
+            background: #d70015;
+            color: white;
         }
 
         .add-item-section {
             display: flex;
-            gap: 10px;
-            margin-bottom: 30px;
-            padding: 20px;
-            background: linear-gradient(135deg, #00BCD4 0%, #0097A7 100%);
-            border-radius: 8px;
+            gap: 12px;
+            padding: 24px 30px;
+            background: white;
+            border-radius: 0;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .add-item-section select,
         .add-item-section input,
         .add-item-section button {
-            padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            font-size: 1em;
+            padding: 10px 14px;
+            border: 1px solid #d5d5d7;
+            border-radius: 8px;
+            font-size: 0.95em;
         }
 
         .add-item-section select {
-            flex: 0 0 200px;
+            flex: 0 0 auto;
             background: white;
             cursor: pointer;
+            min-width: 180px;
         }
 
         .add-item-section input {
             flex: 1;
             min-width: 200px;
+            font-weight: 400;
         }
 
         .add-item-section button {
-            background: white;
-            color: #00BCD4;
-            border: 2px solid white;
+            background: #0071e3;
+            color: white;
+            border: none;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 500;
             white-space: nowrap;
             box-shadow: none;
         }
 
         .add-item-section button:hover {
-            opacity: 0.9;
+            background: #0077ed;
             transform: none;
             box-shadow: none;
-            background: #f0f0f0;
         }
 
         .stats {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
-            justify-content: center;
+            gap: 12px;
+            padding: 24px 30px;
+            justify-content: flex-start;
             flex-wrap: wrap;
+            background: white;
+            border-bottom: 1px solid #e5e5e7;
         }
 
         .undo-popup {
@@ -588,11 +616,11 @@
             bottom: 20px;
             left: 50%;
             transform: translateX(-50%);
-            background: #ff5722;
+            background: #1d1d1f;
             color: white;
             padding: 0;
-            border-radius: 8px;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             z-index: 1000;
             animation: slideUp 0.3s ease-out;
         }
@@ -600,25 +628,26 @@
         .undo-popup-content {
             display: flex;
             align-items: center;
-            gap: 15px;
-            padding: 15px 20px;
+            gap: 12px;
+            padding: 12px 16px;
             font-weight: 500;
+            font-size: 0.95em;
         }
 
         .undo-popup button {
             background: white;
-            color: #ff5722;
+            color: #0071e3;
             border: none;
-            padding: 8px 16px;
+            padding: 6px 12px;
             border-radius: 6px;
             cursor: pointer;
-            font-weight: 700;
+            font-weight: 600;
             transition: background 0.2s;
-            font-size: 0.9em;
+            font-size: 0.85em;
         }
 
         .undo-popup button:hover {
-            background: #fff3e0;
+            background: #f5f5f7;
         }
 
         @keyframes slideUp {
@@ -634,29 +663,40 @@
 
         .stat {
             text-align: center;
-            padding: 12px 15px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
+            padding: 12px 20px;
+            background: #f5f5f7;
+            color: #1d1d1f;
             border-radius: 8px;
-            font-weight: 700;
-            flex: 1;
+            font-weight: 600;
+            flex: 0 0 auto;
             min-width: 120px;
         }
 
         .stat-number {
             font-size: 1.5em;
             display: block;
-            margin-bottom: 5px;
+            margin-bottom: 4px;
+            font-weight: 700;
         }
 
         .stat-label {
-            font-size: 0.9em;
-            opacity: 0.9;
+            font-size: 0.8em;
+            color: #86868b;
+            font-weight: 500;
         }
 
         @media (max-width: 768px) {
+            .container {
+                padding: 0;
+            }
+
+            .header {
+                padding: 40px 20px 30px;
+            }
+
             .header h1 {
                 font-size: 1.8em;
+                margin-bottom: 6px;
             }
 
             .header p {
@@ -664,33 +704,31 @@
             }
 
             .menu-grid {
-                gap: 12px;
+                gap: 0;
             }
 
             .day-card {
-                padding: 16px;
+                padding: 16px 20px;
             }
 
             .day-card.show-ingredients {
                 padding: 20px;
             }
 
-            .container {
-                padding: 15px;
-            }
-
             .recipe-name {
                 font-size: 1em;
+                line-height: 1.3;
             }
 
             .add-item-section {
                 flex-direction: column;
-                padding: 15px;
+                padding: 16px;
                 gap: 8px;
             }
 
             .add-item-section select {
                 flex: 1;
+                min-width: auto;
             }
 
             .tabs-container {
@@ -698,18 +736,21 @@
             }
 
             .tab-btn {
-                padding: 10px 12px;
-                font-size: 0.85em;
-                min-width: 120px;
+                padding: 12px 16px;
+                font-size: 0.9em;
+                min-width: auto;
+                flex: 1;
             }
 
             .stats {
                 gap: 8px;
+                padding: 16px;
             }
 
             .stat {
                 padding: 10px 12px;
-                min-width: 100px;
+                min-width: 90px;
+                flex: 1;
             }
 
             .stat-number {
@@ -721,23 +762,23 @@
             }
 
             .category-items {
-                padding-left: 10px;
+                padding-left: 0;
             }
 
             .item {
                 gap: 8px;
-                padding: 10px;
+                padding: 10px 16px;
                 min-height: 44px;
             }
 
             .item-controls {
-                gap: 3px;
+                gap: 8px;
             }
 
             .quantity-btn {
                 width: 28px;
                 height: 28px;
-                font-size: 1em;
+                font-size: 0.9em;
             }
 
             .item-delete {
@@ -746,24 +787,41 @@
             }
 
             .check-all-btn {
-                padding: 3px 8px;
+                padding: 4px 8px;
                 font-size: 0.75em;
+            }
+
+            .category-header {
+                padding: 12px 16px;
+            }
+
+            .category-count {
+                font-size: 0.8em;
             }
         }
 
         @media (max-width: 480px) {
+            .header {
+                padding: 30px 16px 24px;
+            }
+
             .header h1 {
-                font-size: 1.4em;
+                font-size: 1.5em;
             }
 
             .tab-btn {
-                padding: 8px 10px;
-                font-size: 0.9em;
-                min-width: 100px;
+                padding: 10px 12px;
+                font-size: 0.85em;
+                min-width: auto;
             }
 
-            .container {
-                padding: 10px;
+            .button-container {
+                padding: 20px 16px;
+            }
+
+            button {
+                padding: 10px 40px;
+                font-size: 0.95em;
             }
 
             .add-item-section {
@@ -772,6 +830,7 @@
 
             .stat {
                 padding: 8px 10px;
+                flex: 1;
             }
 
             .stat-number {
@@ -779,24 +838,33 @@
             }
 
             .item {
-                padding: 8px;
+                padding: 8px 12px;
                 gap: 6px;
             }
 
             .quantity-btn {
                 width: 26px;
                 height: 26px;
-                font-size: 0.95em;
+                font-size: 0.85em;
             }
 
             .item-delete {
                 padding: 3px 6px;
                 font-size: 0.7em;
             }
+
+            .category-header {
+                padding: 10px 12px;
+            }
+
+            .day-card {
+                padding: 12px 16px;
+            }
         }
-    
-    body { touch-action: manipulation; }
-    button { touch-action: manipulation; }
+
+        body { touch-action: manipulation; }
+        button { touch-action: manipulation; }
+    </style>
 </style>
 </head>
 <body>

@@ -19,6 +19,7 @@
             justify-content: center;
             align-items: flex-start;
             padding: 0;
+            padding-top: 70px;
         }
 
         .container {
@@ -59,6 +60,11 @@
             text-align: center;
             padding: 30px 20px;
             background: white;
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+            align-items: center;
         }
 
         button {
@@ -715,6 +721,16 @@
                 padding: 20px;
             }
 
+            .button-container {
+                padding: 20px 16px;
+                gap: 12px;
+            }
+
+            .button-container button {
+                flex: 0 1 auto;
+                min-width: 160px;
+            }
+
             .recipe-name {
                 font-size: 1em;
                 line-height: 1.3;
@@ -816,12 +832,15 @@
             }
 
             .button-container {
-                padding: 20px 16px;
+                padding: 16px 12px;
+                gap: 10px;
             }
 
             button {
                 padding: 10px 40px;
                 font-size: 0.95em;
+                flex: 1;
+                min-width: 120px;
             }
 
             .add-item-section {
@@ -1079,14 +1098,24 @@
         #headerBar {
             position: fixed;
             top: 0;
+            left: 0;
             right: 0;
             display: flex;
+            justify-content: flex-end;
             gap: 15px;
             align-items: center;
             padding: 15px 20px;
             background: white;
             border-bottom: 1px solid #e5e5e7;
             z-index: 100;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        /* Ensure buttons don't overlap */
+        #headerBar select,
+        #headerBar button {
+            flex-shrink: 0;
         }
     </style>
 </style>
@@ -1152,7 +1181,7 @@
         <div id="menu-tab">
             <div class="button-container">
                 <button id="generateBtn" onclick="generateMenu()">GENEREAZĂ MENIU</button>
-                <button id="exportMenuBtn" onclick="exportMenuToPDF()" style="display: none; background: #34c759; margin-left: 10px;">📄 Export PDF</button>
+                <button id="exportMenuBtn" onclick="exportMenuToPDF()" style="display: none; background: #34c759;">📄 Export PDF</button>
             </div>
 
             <div class="loading" id="loading">
@@ -2389,6 +2418,22 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
             });
         });
 
+        // Global helper function to clean text for PDF
+        const cleanTextForPDF = (text) => {
+            if (!text) return '';
+            const replacements = {
+                'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ā': 'a',
+                'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
+                'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ė': 'e',
+                'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a', 'ą': 'a',
+                'ñ': 'n', 'ń': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o',
+                'ù': 'u', 'ú': 'u', 'ü': 'u', 'ū': 'u', 'ų': 'u',
+                'ý': 'y', 'ÿ': 'y', 'ż': 'z', 'ź': 'z', 'ž': 'z'
+            };
+            return String(text).replace(/[ăâîșțāĂÂÎȘȚéèêëēėàáäåąñńóôöøùúüūųýÿżźž]/g, 
+                char => replacements[char] || char);
+        };
+
         // Schimbă tab
         function switchTab(tab) {
             // Ascunde toate taburile
@@ -2674,39 +2719,53 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
 
                 // Helper function to remove diacritics
                 const cleanText = (text) => {
+                    if (!text) return '';
                     const map = {
                         'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ū': 'u',
                         'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
-                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
-                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a',
-                        'ñ': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o',
-                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y'
+                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ė': 'e',
+                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a', 'ą': 'a',
+                        'ñ': 'n', 'ń': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o', 'ō': 'o',
+                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ú': 'u', 'ų': 'u',
+                        'ý': 'y', 'ÿ': 'y', 'ż': 'z', 'ź': 'z', 'ž': 'z',
+                        'č': 'c', 'ć': 'c', 'ç': 'c',
+                        'đ': 'd', 'ð': 'd', 'ď': 'd',
+                        'ģ': 'g', 'ğ': 'g',
+                        'ķ': 'k',
+                        'ļ': 'l', 'ł': 'l',
+                        'ń': 'n', 'ņ': 'n',
+                        'ŕ': 'r', 'ŗ': 'r', 'ř': 'r',
+                        'ś': 's', 'ş': 's', 'š': 's',
+                        'ţ': 't', 'ť': 't', 'ŧ': 't',
+                        'ų': 'u', 'ů': 'u', 'ű': 'u',
+                        'ź': 'z', 'ž': 'z', 'ż': 'z'
                     };
-                    return text.replace(/[ăâîșțūĂÂÎȘȚéèêëàáäåñóôöøùúüýÿ]/g, char => map[char] || char);
+                    return String(text).replace(/[ăâîșțūĂÂÎȘȚéèêëēėàáäåąñńóôöøōùúüųýÿżźžčćçđðďģğķļłńņŕŗřśşšţťŧůűż]/g, 
+                        char => map[char] || char);
                 };
+
+                // Set to use Courier font (monospace, better for PDF compatibility)
+                doc.setFont('courier');
 
                 // Header
                 doc.setFontSize(16);
-                doc.setFont(undefined, 'bold');
-                doc.text('MENU SAPTAMANAL', margins, yPosition);
+                doc.setFont('courier', 'bold');
+                doc.text(cleanText('MENU SAPTAMANAL'), margins, yPosition);
                 yPosition += 12;
 
                 // Date info
                 doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
+                doc.setFont('courier', 'normal');
                 doc.setTextColor(100, 100, 100);
-                const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'];
-                const months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
-                               'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
                 const now = new Date();
-                const dateStr = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-                doc.text(`Generat pe: ${dateStr}`, margins, yPosition);
+                const dateStr = 'Data: ' + now.getDate() + '.' + (now.getMonth() + 1) + '.' + now.getFullYear();
+                doc.text(dateStr, margins, yPosition);
                 yPosition += 8;
 
                 // User info if logged in
                 if (currentUser) {
                     doc.setFontSize(10);
-                    doc.text(`Utilizator: ${currentUser.email}`, margins, yPosition);
+                    doc.text(`Utilizator: ${cleanText(currentUser.email)}`, margins, yPosition);
                     yPosition += 5;
                     if (userPreferences.dietType !== 'balanced') {
                         const dietMap = { 'vegetarian': 'Vegetarian', 'vegan': 'Vegan', 'keto': 'Keto' };
@@ -2714,7 +2773,7 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                         yPosition += 5;
                     }
                     if (userPreferences.allergies.length > 0) {
-                        doc.text(`Alergii: ${userPreferences.allergies.join(', ')}`, margins, yPosition);
+                        doc.text(`Alergii: ${cleanText(userPreferences.allergies.join(', '))}`, margins, yPosition);
                         yPosition += 5;
                     }
                 }
@@ -2745,12 +2804,12 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
 
                     // Day header
                     doc.setFontSize(11);
-                    doc.setFont(undefined, 'bold');
-                    doc.text(`${dayNumber}`, margins, yPosition);
+                    doc.setFont('courier', 'bold');
+                    doc.text(cleanText(dayNumber), margins, yPosition);
                     yPosition += 7;
 
                     // Recipe name
-                    doc.setFont(undefined, 'normal');
+                    doc.setFont('courier', 'normal');
                     doc.setFontSize(10);
                     doc.setTextColor(0, 113, 227);
                     const cleanRecipeName = cleanText(recipeName);
@@ -2790,41 +2849,47 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
 
                 // Helper function to remove diacritics
                 const cleanText = (text) => {
+                    if (!text) return '';
                     const map = {
                         'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ū': 'u',
                         'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
-                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e',
-                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a',
-                        'ñ': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o',
-                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ý': 'y', 'ÿ': 'y'
+                        'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ė': 'e',
+                        'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a', 'ą': 'a',
+                        'ñ': 'n', 'ń': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o', 'ō': 'o',
+                        'ù': 'u', 'ú': 'u', 'ü': 'u', 'ú': 'u', 'ų': 'u',
+                        'ý': 'y', 'ÿ': 'y', 'ż': 'z', 'ź': 'z', 'ž': 'z',
+                        'č': 'c', 'ć': 'c', 'ç': 'c',
+                        'đ': 'd', 'ð': 'd', 'ď': 'd',
+                        'ģ': 'g', 'ğ': 'g',
+                        'ķ': 'k',
+                        'ļ': 'l', 'ł': 'l',
+                        'ń': 'n', 'ņ': 'n',
+                        'ŕ': 'r', 'ŗ': 'r', 'ř': 'r',
+                        'ś': 's', 'ş': 's', 'š': 's',
+                        'ţ': 't', 'ť': 't', 'ŧ': 't',
+                        'ų': 'u', 'ů': 'u', 'ű': 'u',
+                        'ź': 'z', 'ž': 'z', 'ż': 'z'
                     };
-                    return text.replace(/[ăâîșțūĂÂÎȘȚéèêëàáäåñóôöøùúüýÿ]/g, char => map[char] || char);
+                    return String(text).replace(/[ăâîșțūĂÂÎȘȚéèêëēėàáäåąñńóôöøōùúüųýÿżźžčćçđðďģğķļłńņŕŗřśşšţťŧůűż]/g, 
+                        char => map[char] || char);
                 };
+
+                // Set to use Courier font (monospace, better for PDF compatibility)
+                doc.setFont('courier');
 
                 // Header
                 doc.setFontSize(16);
-                doc.setFont(undefined, 'bold');
-                doc.text('LISTA DE CUMPARATURI', margins, yPosition);
+                doc.setFont('courier', 'bold');
+                doc.text(cleanText('LISTA DE CUMPARATURI'), margins, yPosition);
                 yPosition += 12;
 
                 // Date info
                 doc.setFontSize(10);
-                doc.setFont(undefined, 'normal');
+                doc.setFont('courier', 'normal');
                 doc.setTextColor(100, 100, 100);
-                const days = ['Duminica', 'Luni', 'Marti', 'Miercuri', 'Joi', 'Vineri', 'Sambata'];
-                const months = ['Ianuarie', 'Februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie',
-                               'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
                 const now = new Date();
-                const dateStr = days[now.getDay()] + ', ' + now.getDate() + ' ' + months[now.getMonth()] + ' ' + now.getFullYear();
-                doc.text(`Generat pe: ${dateStr}`, margins, yPosition);
-                yPosition += 8;
-                const today = new Date().toLocaleDateString('ro-RO', { 
-                    weekday: 'long', 
-                    year: 'numeric', 
-                    month: 'long', 
-                    day: 'numeric' 
-                });
-                doc.text(`Generat pe: ${today}`, margins, yPosition);
+                const dateStr = 'Data: ' + now.getDate() + '.' + (now.getMonth() + 1) + '.' + now.getFullYear();
+                doc.text(dateStr, margins, yPosition);
                 yPosition += 8;
 
                 // Statistics
@@ -2857,12 +2922,12 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                     // Category header - clean text without diacritics
                     const cleanCategory = cleanText(category);
                     doc.setFontSize(11);
-                    doc.setFont(undefined, 'bold');
+                    doc.setFont('courier', 'bold');
                     doc.setTextColor(0, 113, 227); // Blue
                     doc.text(cleanCategory, margins, yPosition);
                     yPosition += 8;
 
-                    doc.setFont(undefined, 'normal');
+                    doc.setFont('courier', 'normal');
                     doc.setFontSize(10);
                     doc.setTextColor(0, 0, 0);
 
@@ -3159,17 +3224,47 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
         function exportCalendarToPDF() {
             const sortedDates = Object.keys(calendarPlans).sort();
             if (sortedDates.length === 0) {
-                alert('Nicio zi planificată pentru export');
+                alert('Nicio zi planificata pentru export');
                 return;
             }
 
+            // Helper function to remove diacritics
+            const cleanText = (text) => {
+                if (!text) return '';
+                const map = {
+                    'ă': 'a', 'â': 'a', 'î': 'i', 'ș': 's', 'ț': 't', 'ū': 'u',
+                    'Ă': 'A', 'Â': 'A', 'Î': 'I', 'Ș': 'S', 'Ț': 'T',
+                    'é': 'e', 'è': 'e', 'ê': 'e', 'ë': 'e', 'ē': 'e', 'ė': 'e',
+                    'à': 'a', 'á': 'a', 'ä': 'a', 'å': 'a', 'ą': 'a',
+                    'ñ': 'n', 'ń': 'n', 'ó': 'o', 'ô': 'o', 'ö': 'o', 'ø': 'o', 'ō': 'o',
+                    'ù': 'u', 'ú': 'u', 'ü': 'u', 'ú': 'u', 'ų': 'u',
+                    'ý': 'y', 'ÿ': 'y', 'ż': 'z', 'ź': 'z', 'ž': 'z',
+                    'č': 'c', 'ć': 'c', 'ç': 'c',
+                    'đ': 'd', 'ð': 'd', 'ď': 'd',
+                    'ģ': 'g', 'ğ': 'g',
+                    'ķ': 'k',
+                    'ļ': 'l', 'ł': 'l',
+                    'ń': 'n', 'ņ': 'n',
+                    'ŕ': 'r', 'ŗ': 'r', 'ř': 'r',
+                    'ś': 's', 'ş': 's', 'š': 's',
+                    'ţ': 't', 'ť': 't', 'ŧ': 't',
+                    'ų': 'u', 'ů': 'u', 'ű': 'u',
+                    'ź': 'z', 'ž': 'z', 'ż': 'z'
+                };
+                return String(text).replace(/[ăâîșțūĂÂÎȘȚéèêëēėàáäåąñńóôöøōùúüųýÿżźžčćçđðďģğķļłńņŕŗřśşšţťŧůűż]/g, 
+                    char => map[char] || char);
+            };
+
+            const { jsPDF } = window.jspdf;
             const doc = new jsPDF();
             let yPos = 20;
 
+            doc.setFont('courier', 'bold');
             doc.setFontSize(18);
-            doc.text('Plan Calendar', 20, yPos);
+            doc.text(cleanText('Plan Calendar'), 20, yPos);
             yPos += 15;
 
+            doc.setFont('courier', 'normal');
             doc.setFontSize(11);
             sortedDates.forEach(dateStr => {
                 if (yPos > 270) {
@@ -3178,14 +3273,16 @@ Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
                 }
 
                 doc.setFontSize(12);
+                doc.setFont('courier', 'bold');
                 doc.setTextColor(0, 113, 227);
-                doc.text(dateStr, 20, yPos);
+                doc.text(cleanText(dateStr), 20, yPos);
                 yPos += 10;
 
                 doc.setFontSize(10);
+                doc.setFont('courier', 'normal');
                 doc.setTextColor(29, 29, 31);
                 calendarPlans[dateStr].forEach(recipe => {
-                    doc.text('• ' + recipe, 25, yPos);
+                    doc.text('* ' + cleanText(recipe), 25, yPos);
                     yPos += 7;
                 });
 

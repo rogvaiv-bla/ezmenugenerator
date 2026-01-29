@@ -1,334 +1,383 @@
-# 🍽️ Ce Mănânc Azi?
+# 🍽️ Dieta Menu Planner
 
-**Intelligent Weekly Menu Generator & Shopping List Manager**
+**Advanced Weekly Menu Generator with User Profiles, Analytics & Calendar Planning**
 
-[![Vercel Deployed](https://img.shields.io/badge/deployed%20on-Vercel-000000?logo=vercel)](https://ezmenugenerator.vercel.app)
-[![Live](https://img.shields.io/badge/status-live-brightgreen)](https://ezmenugenerator.vercel.app)
+[![Vercel](https://img.shields.io/badge/deployed%20on-Vercel-000000?logo=vercel)](https://ezmenugenerator.vercel.app)
+[![Status](https://img.shields.io/badge/status-active-brightgreen)](https://ezmenugenerator.vercel.app)
 [![Redis](https://img.shields.io/badge/database-Redis-DC382D?logo=redis)](https://vercel.com)
 
-**Tech Stack:**
-![Vercel](https://img.shields.io/badge/Vercel-000?logo=vercel)
+**Technology Stack:**
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?logo=javascript&logoColor=black)
 ![Node.js](https://img.shields.io/badge/Node.js-339933?logo=node.js&logoColor=white)
 ![Redis](https://img.shields.io/badge/Redis-DC382D?logo=redis&logoColor=white)
+![jsPDF](https://img.shields.io/badge/jsPDF-5C2D91?logo=javascript&logoColor=white)
 ![HTML5/CSS3](https://img.shields.io/badge/HTML5%2FCSS3-E34C26?logo=html5&logoColor=white)
 
 ---
 
-## 📋 Table of Contents
+## ✨ Features Overview
 
-- [Features](#features)
-- [Project Structure](#project-structure)
-- [Installation](#installation)
-- [Usage](#usage)
-- [Deployment](#deployment)
-- [API Documentation](#api-documentation)
+### 1️⃣ Menu Generation
+- 📅 **7-Day Meal Plans** - AI-powered random generation
+- 🔄 **No Repeats** - Tracks previous menu, prevents duplicates
+- 🍽️ **Ingredient Lists** - Auto-compiled from all recipes
+- 📄 **PDF Export** - Download complete menu with ingredients
+- 🎯 **Dietary Filtering** - Respects user preferences (vegetarian, vegan, keto, balanced)
+- ⚠️ **Allergy Management** - Excludes recipes with user allergens
 
----
-
-## ✨ Features
-
-### Menu Generation
-- 📅 **7-Day Menu Generator** - AI-powered meal suggestions
-- 🍽️ **Dietary Restrictions** - Respect allergies & preferences
-- 🥗 **Protein Management** - Intelligent frequency balancing
-- 📝 **Complete Recipes** - View full ingredients & instructions
-
-### Shopping List
-- 📦 **Auto-Generated Lists** - Built from menu selections
-- ✅ **Smart Tracking** - Check off items while shopping
+### 2️⃣ Shopping List Management
+- 📦 **Category Organization** - Vegetables, Fruits, Dairy, Meat, etc.
+- ✅ **Smart Auto-Sorting** - Unchecked items bubble to top
 - 📊 **Real-time Stats** - Total/bought/remaining counts
-- 🔗 **Shareable Links** - Share lists with family
-- 💾 **Cloud Sync** - Data persists across devices via Redis
-- ↶ **Undo on Delete** - 5-second undo popup
+- 🔗 **Shareable Links** - Generate URL to share with family
+- 💾 **Multi-Device Sync** - Redis backend for persistent storage
+- 📄 **PDF Export** - Download list with checkboxes
 
-### User Experience
-- 📱 **Fully Responsive** - Desktop, tablet, mobile optimized
-- 🎨 **Beautiful UI** - Smooth animations & modern design
-- ⚡ **Instant Loading** - Serverless CDN global deployment
-- 🔄 **Multi-Device Sync** - Same sessionId = same data everywhere
-- 💾 **State Persistence** - Collapsed categories remember state
-- 🎯 **Zero Lag** - Optimized rendering on mobile
+### 3️⃣ User Authentication & Profiles
+- 🔐 **Secure Registration/Login** - Email + password with PBKDF2 hashing
+- 👤 **User Profiles** - Email, preferences, dietary restrictions
+- 🎯 **Dietary Preferences** - Choose: Balanced, Vegetarian, Vegan, or Keto
+- ⚠️ **Allergy Management** - Add/remove custom allergies
+- 🌍 **Language Selection** - Romanian, English, French
+- 💾 **Persistent Storage** - Redis backend with JWT authentication
+
+### 4️⃣ Recipe Import & Management
+- 📥 **CSV Import** - Upload recipes from spreadsheet
+- 👀 **Preview Before Import** - Review first 3 recipes
+- 📋 **Custom Recipes** - Add your own recipe database
+- ⚡ **Automatic Integration** - Imported recipes available in menu generation
+
+### 5️⃣ Analytics & Usage Tracking
+- 📊 **Recipe Popularity** - Track which recipes are used most
+- 🏆 **Top 5 Charts** - See most-used recipes
+- 🥚 **Nutritional Stats** - Total protein tracking
+- 🔄 **Usage Counter** - Auto-increments when recipe appears in menu
+- 🔀 **Reset Option** - Clear analytics to start fresh
+
+### 6️⃣ Calendar Planning
+- 📆 **Month Navigation** - Browse past/future months
+- 📍 **Date Selection** - Click dates to assign meals
+- 🍽️ **Recipe Assignment** - Add multiple recipes per day
+- 📅 **Planned Days View** - See all scheduled meals
+- 📄 **PDF Export** - Download calendar plan
+- 🗑️ **Clear Function** - Reset all plans
+
+### 7️⃣ Multilingual Support
+- 🇷🇴 **Romanian** (default) - Full translation
+- 🇬🇧 **English** - Complete English interface
+- 🇫🇷 **Français** - Full French translation
+- 🔄 **Dynamic Switching** - Change language anytime
+
+### 8️⃣ Accessibility (WCAG Compliant)
+- ⌨️ **Keyboard Navigation** - Tab and Enter key support
+- 🔍 **Title Attributes** - Tooltips on all interactive elements
+- 📝 **ARIA Labels** - Screen reader support
+- 🎨 **Color Contrast** - WCAG AA standard compliance
+- 🔤 **Semantic HTML** - Proper heading hierarchy
 
 ---
 
 ## 📁 Project Structure
 
 ```
-.
+dieta/
 ├── api/
-│   ├── shopping-list.js      # Redis persistence endpoint
-│   ├── recipes.js            # Recipe API endpoint
-│   └── menu.js               # Menu generation endpoint
+│   ├── auth/
+│   │   ├── register.js           # User registration (PBKDF2 hashing)
+│   │   ├── login.js              # JWT token generation
+│   │   └── me.js                 # Verify token & get user
+│   ├── user/
+│   │   └── preferences.js        # Get/PUT dietary preferences
+│   ├── menu.js                   # Menu generation endpoint
+│   ├── recipes.js                # Recipe list API
+│   └── shopping-list.js          # Redis-backed list persistence
 ├── frontend/
-│   └── index.html            # Single-page app (HTML/CSS/JS)
+│   ├── index.html                # Single-page app (3178 lines)
+│   ├── README.md                 # Frontend documentation
+│   └── index.html.bak*           # Backups
 ├── data/
-│   ├── RETETE.txt           # Recipe database
-│   ├── RESTRICTII.txt       # Dietary restrictions
-│   └── LISTA CU INGREDIENTE.txt
-├── docs/                     # Archive of development docs
-├── package.json              # Dependencies (redis client)
-├── README.md                 # This file
-└── vercel.json              # Vercel config (Redis integration)
+│   ├── RETETE.txt               # Recipe database (70+ recipes)
+│   ├── RESTRICTII.txt           # Dietary restrictions
+│   └── LISTA CU INGREDIENTE.txt # Ingredient list
+├── docs/
+│   ├── API_DOCUMENTATION.md     # Complete API reference
+│   ├── SYNC_ARCHITECTURE.md     # Multi-device sync docs
+│   └── (other documentation)
+├── package.json
+├── vercel.json                   # Vercel serverless config
+└── README.md                     # This file
 ```
 
 ---
 
-## 🚀 Installation
+## 🚀 Quick Start
 
-### Prerequisites
-- Node.js 16+ (for local testing)
-- npm or yarn
-- Vercel account (for deployment)
+### Option 1: Live Demo (No Installation)
+Visit: **https://ezmenugenerator.vercel.app**
 
-### Local Development
+1. Click "Meniu" to generate a 7-day menu
+2. Click "Cumpărături" to manage shopping
+3. Click "Profil" and register to unlock user features
+4. Try the other tabs (Import, Analytics, Calendar)
+
+### Option 2: Local Development
 
 ```bash
-# Clone & setup
-git clone <repo>
+# Clone the repository
+git clone <your-repo-url>
 cd dieta
+
+# Install dependencies
 npm install
 
-# Run locally
+# Start local development server
 npm run dev
 
-# Visit: http://localhost:3000
+# Open browser to http://localhost:3000
 ```
 
-### Environment Variables
-
-Create `.env.local`:
-```
-STORAGE_REDIS_URL=redis://default:PASSWORD@HOST:PORT
-```
-
----
-
-## 💻 Usage
-
-### Generate Weekly Menu
-1. Click **"📅 Menu Săptămânal"** tab
-2. Click **"GENEREAZĂ MENIU"** button
-3. View 7-day meal plan
-4. Click recipes to search online
-5. Menu recipes auto-populate shopping list
-
-### Manage Shopping List
-1. Click **"🛒 Lista de Cumpărături"** tab
-2. **Add items**: Select category → Type product → Click ➕
-3. **Track progress**: Check off items while shopping
-4. **Collapse categories**: Click category header (state persists!)
-5. **Undo deletes**: 5-second popup when deleting items
-6. **Share list**: Click 🔗 button to generate shareable link
-7. **Sync devices**: Use same URL = same data on phone/tablet
-
-#### Multi-Device Features
-- Same sessionId automatically syncs every 5 seconds
-- Data persists in Redis (30-day expiration)
-- Collapsed category state saved per device
-- Works offline (uses localStorage backup)
-
----
-
-## 🌐 Deployment
-
-### Deploy to Vercel
+### Option 3: Deploy to Vercel
 
 ```bash
-# Push to main branch
-git push origin main
+# Install Vercel CLI
+npm install -g vercel
 
-# Vercel auto-deploys
-# Build log: https://vercel.com/projects
+# Deploy
+vercel
 
-# Check Redis status in Vercel Dashboard:
-# Project → Storage → "ezmenu"
-```
-
-### Verify Deployment
-```bash
-# Check API
-curl https://ezmenugenerator.vercel.app/api/shopping-list?sessionId=test
-
-# Check Redis
-npm run dev  # Local testing with Redis
+# Your project is live!
 ```
 
 ---
 
-## 🔌 API Documentation
+## 📖 Usage Guide
 
-### Shopping List Endpoint
+### Tab 1: Menu (Meniu)
+**Generate 7-day meal plan**
 
-**Base URL:** `/api/shopping-list`
+1. Click the **"Menu"** tab
+2. Click **"Generează Meniu Aleator"** button
+3. View 7 random recipes with ingredients
+4. Click **"Exportă Meniu PDF"** to download
 
-#### POST - Save Shopping List
-```javascript
-POST /api/shopping-list
-Content-Type: application/json
+**Features:**
+- Space bar = Quick generate shortcut
+- Auto-syncs with shopping list
+- Filters based on diet type and allergies
 
-{
-  "sessionId": "session_1234567890",
-  "data": {
-    "🥬 Legume/Fructe": {
-      "Banane 🍌": { "checked": false, "quantity": 1 }
-    }
-  },
-  "timestamp": 1674507600000
-}
+### Tab 2: Shopping List (Cumpărături)
+**Organize & track purchases**
 
-Response:
-{
-  "success": true,
-  "message": "Shopping list saved to Redis",
-  "lastUpdated": 1674507600000
-}
+1. Click **"Shopping"** tab
+2. **Add Items:**
+   - Select category
+   - Type product name
+   - Set quantity
+   - Click "➕ Adaugă"
+3. **Manage Items:**
+   - Check box to mark purchased
+   - Items auto-sort (unchecked stay on top)
+   - Click "×" to remove item
+4. **Share:** Click "🔗 Share" to generate unique URL
+5. **Export:** Click "📄 Exportă Cumpărături PDF"
+
+**Multi-Device Sync:**
+- Same sessionId = same data on all devices
+- Auto-sync every 5 seconds
+- Works offline with localStorage backup
+
+### Tab 3: Profile (Profil)
+**User account & preferences**
+
+1. Click **"Login"** button (top-right)
+2. **Register or Login**
+3. Click **"Profile"** tab:
+   - **Diet Type:** Balanced, Vegetarian, Vegan, or Keto
+   - **Allergies:** Add custom allergies
+   - **Language:** RO, EN, or FR
+4. Click **"Salvează Preferințe"**
+
+### Tab 4: Import Recipes (Import Rețete)
+**Add custom recipes from CSV**
+
+1. Click **"Import"** tab
+2. **Prepare CSV:**
+   ```
+   Nume,Ingrediente,Proteina
+   Pui Copt,pui|brânză|sare,35g
+   Salată,roșii|castraveți|ulei,5g
+   ```
+3. **Upload & Preview** first 3 recipes
+4. Click **"Importă Rețete"** to add
+
+### Tab 5: Analytics (Analize)
+**Track recipe popularity**
+
+1. Click **"Analytics"** tab
+2. View **Top 5 Recipes**
+3. See **Nutritional Stats**
+4. Click **"Resetează Statistici"** to clear
+
+### Tab 6: Calendar (Calendar)
+**Plan meals for specific dates**
+
+1. Click **"Calendar"** tab
+2. Navigate months with arrow buttons
+3. Click a date to select
+4. Choose recipe and click "Adaugă"
+5. View all plans below calendar
+6. Export to PDF or clear all plans
+
+---
+
+## 🔐 Authentication & Security
+
+### Registration
+- Email validation (must be valid format)
+- Password (minimum 6 characters)
+- PBKDF2 hashing with salt
+- Stored in Redis with 30-day TTL
+
+### Login
+- Email & password verification
+- JWT token generated
+- Token used for subsequent requests
+
+### Data Privacy
+- ✅ Passwords hashed server-side
+- ✅ JWT tokens expire automatically
+- ✅ User data isolated per account
+- ⚠️ Use HTTPS in production
+
+---
+
+## 🔌 API Endpoints
+
+See [docs/API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md) for complete specification.
+
+### Core Endpoints
 ```
-
-#### GET - Fetch Shopping List
-```javascript
-GET /api/shopping-list?sessionId=session_1234567890
-
-Response:
-{
-  "data": { "🥬 Legume/Fructe": { ... } },
-  "lastUpdated": 1674507600000,
-  "isNew": false
-}
-```
-
-#### DELETE - Clear Shopping List
-```javascript
-DELETE /api/shopping-list
-
-{
-  "sessionId": "session_1234567890"
-}
+POST   /api/auth/register              Register new user
+POST   /api/auth/login                 Login & get JWT token
+GET    /api/auth/me                    Verify token
+GET    /api/recipes                    Get all recipes
+POST   /api/menu                       Generate menu
+GET    /api/shopping-list              Fetch list
+POST   /api/shopping-list              Save list to Redis
+GET    /api/user/preferences           Get user preferences
+PUT    /api/user/preferences           Update preferences
 ```
 
 ---
 
-## 🔧 Technical Details
+## 🛠️ Technical Details
 
 ### Frontend Architecture
-- **Single Page App** (HTML + CSS + Vanilla JS)
-- **No framework** = ultra-lightweight (~1600 lines)
-- **LocalStorage** for backup + fast initial load
-- **Fetch API** for server communication
-- **CSS Grid/Flexbox** for responsive layout
+- **Framework:** Vanilla JavaScript (no dependencies except jsPDF)
+- **Lines of Code:** ~3,178
+- **CSS:** Custom responsive design
+- **State Management:** localStorage + global JavaScript variables
 
 ### Backend Architecture
-- **Vercel Serverless Functions** (Node.js)
-- **Redis on Vercel KV** for persistent storage
-- **Session-based** data isolation
-- **30-day** automatic expiration per session
-- **Error handling** with fallback to localStorage
+- **Platform:** Vercel Serverless Functions
+- **Language:** Node.js
+- **Database:** Redis (Vercel KV)
+- **Authentication:** JWT tokens (Base64 encoded)
 
-### Data Flow
+### Data Persistence
 ```
-User Action
-  ↓
-Save to localStorage (fast)
-  ↓
-POST to /api/shopping-list (Redis save)
-  ↓
-Every 5 sec: GET /api/shopping-list (sync check)
-  ↓
-If newer data: Update UI + localStorage
+localStorage:
+  - authToken, userEmail, userPreferences
+  - shoppingList, csvRecipes, calendarPlans
+  - recipeUsageStats
+
+Redis (Server):
+  - user:{userId} → user account data
+  - shopping-list:{sessionId} → persistent list
+  - Expiration: 30 days per record
 ```
 
 ---
 
-## 📊 Performance Metrics
+## 📊 Performance
 
-- **Initial Load**: < 2 seconds (global CDN)
-- **Menu Generation**: < 1 second
-- **Sync Latency**: < 100ms (Redis)
-- **Mobile Toggle**: < 50ms (optimized rendering)
-- **Scrollable Categories**: 70vh (no content cutoff)
-
----
-
-## 🐛 Known Issues & Fixes
-
-| Issue | Status | Solution |
-|-------|--------|----------|
-| Stats not updating on load | ✅ Fixed | Call updateStats() on DOMContentLoaded |
-| Mobile toggle lag | ✅ Fixed | Optimized saveSingleCategoryState() |
-| Sync HTTP 500 errors | ✅ Fixed | Use redis npm client + STORAGE_REDIS_URL |
-| Category items cut off | ✅ Fixed | Changed max-height to 70vh + overflow-y auto |
-| Delete without undo | ✅ Fixed | Added 5-second undo popup |
-| Data lost on refresh | ✅ Fixed | Redis persistence + localStorage backup |
+- ⚡ Initial page load: < 2 seconds
+- ⚡ Menu generation: < 1 second
+- ⚡ Sync latency: < 100ms
+- ⚡ Mobile tap response: < 50ms
 
 ---
 
-## 📝 License
+## 🌐 Responsive Design
 
-Created for personal use. Feel free to fork & customize!
-
----
-
-## 👤 Author
-
-**Eduard** - Full Stack Developer  
-📧 Contact via GitHub
-
----
-
-**Last Updated:** January 23, 2026  
-**Version:** 2.0 (Redis Integration + Multi-Device Sync)
-
-# Start local dev server (requires Vercel CLI)
-npm run dev
-
-# Visit http://localhost:3000
 ```
+Mobile (< 480px):     Single column, large touch targets
+Tablet (480-768px):   Two columns, optimized layout
+Desktop (> 768px):    Full width, multi-column interface
+```
+
+Works on iPhone, iPad, Android, laptop & desktop.
+
+---
+
+## 🐛 Troubleshooting
+
+| Issue | Solution |
+|-------|----------|
+| Menu not generating | Refresh page, check recipes in API |
+| Login not working | Verify email format, check Redis connection |
+| Shopping list not syncing | Check network, clear localStorage, reload |
+| CSV import failing | Verify format: `Name,Ingredients,Protein` |
+| Calendar dates not saving | Check localStorage is enabled |
+| PDF export empty | Ensure data exists |
+
+---
+
+## 🚀 Deployment
 
 ### Deploy to Vercel
 
-**Option 1: Via Git (Recommended)**
-1. Push code to GitHub
-2. Visit https://vercel.com
-3. Click "New Project" and import your repository
-4. Deploy!
-
-**Option 2: Via CLI**
 ```bash
 npm install -g vercel
 vercel
+
+# Configure Redis in Vercel dashboard
+# Deploy your project
 ```
 
-## Deployment
+### Verify Deployment
+1. Go to https://vercel.com/dashboard
+2. Select your project
+3. Check build logs
+4. Test live URL
 
-This project is configured for Vercel deployment:
+---
 
-- **Configuration**: `vercel.json`
-- **API Routes**: `/api/menu.js` and `/api/recipes.js`
-- **Frontend**: `/frontend/` directory
-- **Auto-deploys**: On every push to main branch
+## 📚 Additional Resources
 
-### Project Structure
+- **Live Demo:** https://ezmenugenerator.vercel.app
+- **API Docs:** [docs/API_DOCUMENTATION.md](./docs/API_DOCUMENTATION.md)
+- **Frontend Guide:** [frontend/README.md](./frontend/README.md)
 
-```
-.
-├── api/                     # Serverless API functions
-│   ├── menu.js             # Menu generation endpoint
-│   └── recipes.js          # Recipe list endpoint
-├── frontend/               # Static website
-│   └── index.html
-├── data/                   # Data files (recipes, restrictions)
-├── vercel.json            # Vercel configuration
-├── package.json
-└── README.md
-```
+---
 
-## How It Works
+## 🤝 Contributing
 
-1. **Generate Menu**: Click "GENEREAZĂ MENIU" button
-2. **Expand Card**: Click any day to see ingredients
-3. **Search Recipe**: Click recipe name with 🔍 icon
-4. **Save/Share**: Screenshot or bookmark your menu
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/amazing-thing`
+3. Make changes
+4. Commit: `git commit -m "Add amazing feature"`
+5. Push: `git push origin feature/amazing-thing`
+6. Create Pull Request
+
+---
+
+## 📄 License
+
+All rights reserved. 2026. Created for personal meal planning needs.
 
 ---
 
 **Made with ❤️ for better meal planning** 🍽️
+
+Last Updated: **January 29, 2026** | Version: **3.0** (Auth + Import + Analytics + Calendar)

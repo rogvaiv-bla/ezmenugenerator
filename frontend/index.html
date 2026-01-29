@@ -864,10 +864,225 @@
 
         body { touch-action: manipulation; }
         button { touch-action: manipulation; }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .modal.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 40px 30px;
+            border-radius: 12px;
+            width: 90%;
+            max-width: 400px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .modal-header {
+            font-size: 1.5em;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: #1d1d1f;
+        }
+
+        .modal-form {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .modal-form input {
+            padding: 12px 15px;
+            border: 1px solid #d5d5d7;
+            border-radius: 8px;
+            font-size: 1em;
+            font-family: inherit;
+        }
+
+        .modal-form input:focus {
+            outline: none;
+            border-color: #0071e3;
+        }
+
+        .modal-error {
+            background: #fee;
+            color: #d70015;
+            padding: 10px 12px;
+            border-radius: 8px;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+            display: none;
+        }
+
+        .modal-error.active {
+            display: block;
+        }
+
+        .modal-toggle {
+            text-align: center;
+            margin-top: 15px;
+            font-size: 0.9em;
+            color: #86868b;
+        }
+
+        .modal-toggle a {
+            color: #0071e3;
+            cursor: pointer;
+            text-decoration: underline;
+        }
+
+        .user-button {
+            position: absolute;
+            top: 20px;
+            right: 120px;
+            background: white;
+            color: #0071e3;
+            border: 1px solid #0071e3;
+            padding: 8px 16px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.9em;
+            font-weight: 600;
+            z-index: 100;
+        }
+
+        .user-button:hover {
+            background: #f5f5f7;
+        }
+
+        /* Profile Page */
+        #profile-tab {
+            display: none;
+        }
+
+        #profile-tab.active {
+            display: block;
+        }
+
+        .profile-container {
+            padding: 30px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #e5e5e7;
+        }
+
+        .profile-header h2 {
+            font-size: 1.5em;
+            color: #1d1d1f;
+            margin-bottom: 5px;
+        }
+
+        .profile-header p {
+            color: #86868b;
+        }
+
+        .profile-section {
+            margin-bottom: 30px;
+        }
+
+        .profile-section h3 {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1d1d1f;
+            margin-bottom: 15px;
+        }
+
+        .diet-options {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 10px;
+        }
+
+        .diet-option {
+            padding: 12px 15px;
+            border: 2px solid #e5e5e7;
+            border-radius: 8px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            font-weight: 500;
+        }
+
+        .diet-option:hover {
+            border-color: #0071e3;
+            background: #f5f5f7;
+        }
+
+        .diet-option.selected {
+            background: #0071e3;
+            color: white;
+            border-color: #0071e3;
+        }
+
+        .allergy-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .allergy-tag {
+            background: #e5e5e7;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .allergy-tag .remove {
+            cursor: pointer;
+            font-weight: bold;
+            color: #d70015;
+        }
+
+        .profile-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+        }
+
+        .profile-buttons button {
+            flex: 1;
+        }
+
+        .profile-buttons .danger {
+            background: #d70015;
+        }
+
+        .profile-buttons .danger:hover {
+            background: #b30012;
+        }
     </style>
 </style>
+    <!-- jsPDF library for PDF export -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 </head>
 <body>
+        <!-- User Button -->
+        <button class="user-button" id="userButton" onclick="toggleLoginModal()">👤 Login</button>
+
         <!-- Language Selector -->
         <div style="position: absolute; top: 20px; right: 30px; z-index: 100;">
             <select id="languageSelect" onchange="setLanguage(this.value)" style="padding: 8px 12px; border-radius: 8px; border: 1px solid #d5d5d7; font-size: 0.9em; cursor: pointer; background: white;">
@@ -875,6 +1090,32 @@
                 <option value="en">🇬🇧 English</option>
                 <option value="fr">🇫🇷 Français</option>
             </select>
+        </div>
+
+        <!-- Auth Modal -->
+        <div id="authModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-error" id="authError"></div>
+                <div id="loginForm">
+                    <div class="modal-header">🔐 Conectare</div>
+                    <div class="modal-form">
+                        <input type="email" id="loginEmail" placeholder="Email">
+                        <input type="password" id="loginPassword" placeholder="Parolă">
+                        <button onclick="handleLogin()">Conectează-te</button>
+                        <div class="modal-toggle">Nu ai cont? <a onclick="switchAuthMode('register')">Înregistrare</a></div>
+                    </div>
+                </div>
+                <div id="registerForm" style="display: none;">
+                    <div class="modal-header">📝 Înregistrare</div>
+                    <div class="modal-form">
+                        <input type="email" id="registerEmail" placeholder="Email">
+                        <input type="password" id="registerPassword" placeholder="Parolă (min 6 caractere)">
+                        <input type="password" id="registerPassword2" placeholder="Confirmă parola">
+                        <button onclick="handleRegister()">Înregistrează-te</button>
+                        <div class="modal-toggle">Ai cont? <a onclick="switchAuthMode('login')">Conectare</a></div>
+                    </div>
+                </div>
+            </div>
         </div>
 
     <div class="container">
@@ -885,14 +1126,19 @@
 
         <!-- Taburi Navigație -->
         <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchTab('menu')">📅 Menu Săptămânal</button>
-            <button class="tab-btn" onclick="switchTab('shopping')">🛒 Lista de Cumpărături</button>
+            <button class="tab-btn active" onclick="switchTab('menu')" title="Generează și afișează meniu săptămânal">📅 Menu Săptămânal</button>
+            <button class="tab-btn" onclick="switchTab('shopping')" title="Gestionează lista de cumpărături">🛒 Lista de Cumpărături</button>
+            <button class="tab-btn" id="profileTabBtn" style="display: none;" onclick="switchTab('profile')" title="Vezi și modifică preferințele tale">👤 Profil</button>
+            <button class="tab-btn" onclick="switchTab('import')" title="Importă rețete din CSV">📥 Import Rețete</button>
+            <button class="tab-btn" onclick="switchTab('analytics')" title="Vezi statistici rețete">📊 Statistici</button>
+            <button class="tab-btn" onclick="switchTab('calendar')" title="Planifică meniuri pe calendar">📆 Calendar</button>
         </div>
 
         <!-- Tab 1: Menu -->
         <div id="menu-tab">
             <div class="button-container">
                 <button id="generateBtn" onclick="generateMenu()">GENEREAZĂ MENIU</button>
+                <button id="exportMenuBtn" onclick="exportMenuToPDF()" style="display: none; background: #34c759; margin-left: 10px;">📄 Export PDF</button>
             </div>
 
             <div class="loading" id="loading">
@@ -913,6 +1159,7 @@
                 <input type="text" id="productInput" placeholder="Introduceți produsul nou (ex: Făină 4 kg)">
                 <button onclick="addProduct()">➕ Adaugă Produs</button>
                 <button onclick="generateShareLink()" style="background: #fff3e0; color: #ff9800; border: 2px solid #ff9800; margin-left: 8px; font-weight: 700;">🔗 Partajează Lista</button>
+                <button onclick="exportShoppingListToPDF()" style="background: #34c759; color: white; margin-left: 8px; font-weight: 700;">📄 Export PDF</button>
             </div>
 
             <div class="stats" id="stats-container">
@@ -931,6 +1178,145 @@
             </div>
 
             <div class="shopping-list-container active" id="shoppingListContainer"></div>
+        </div>
+
+        <!-- Tab 3: Profile -->
+        <div id="profile-tab">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2 id="profileName">👤 Profilul Meu</h2>
+                    <p id="profileEmail">-</p>
+                </div>
+
+                <div class="profile-section">
+                    <h3>🥘 Tip de Dietă</h3>
+                    <div class="diet-options">
+                        <div class="diet-option" onclick="selectDiet('balanced')">Echilibrat</div>
+                        <div class="diet-option" onclick="selectDiet('vegetarian')">Vegetarian</div>
+                        <div class="diet-option" onclick="selectDiet('vegan')">Vegan</div>
+                        <div class="diet-option" onclick="selectDiet('keto')">Keto</div>
+                    </div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>⚠️ Alergii și Restricții</h3>
+                    <div style="display: flex; gap: 10px; margin-bottom: 15px;">
+                        <input type="text" id="allergyInput" placeholder="Ex: Arahide, Lactoză..." style="flex: 1; padding: 10px 12px; border: 1px solid #d5d5d7; border-radius: 8px;">
+                        <button onclick="addAllergy()" style="padding: 10px 20px;">Adaugă</button>
+                    </div>
+                    <div class="allergy-list" id="allergyList"></div>
+                </div>
+
+                <div class="profile-section">
+                    <h3>🌐 Limbă Preferată</h3>
+                    <select id="profileLanguage" onchange="updateLanguagePref(this.value)" style="padding: 10px 12px; border: 1px solid #d5d5d7; border-radius: 8px; font-size: 0.95em; width: 100%;">
+                        <option value="ro">🇷🇴 Română</option>
+                        <option value="en">🇬🇧 English</option>
+                        <option value="fr">🇫🇷 Français</option>
+                    </select>
+                </div>
+
+                <div class="profile-buttons">
+                    <button onclick="savePreferences()">💾 Salvează Preferințe</button>
+                    <button class="danger" onclick="logout()">🚪 Deconectare</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 4: Import Rețete -->
+        <div id="import-tab" style="display: none;">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>📥 Import Rețete din CSV</h2>
+                    <p>Adaugă rețete noi din fișier CSV</p>
+                </div>
+
+                <div class="profile-section">
+                    <h3>Format CSV necesar:</h3>
+                    <pre style="background: #f5f5f7; padding: 15px; border-radius: 8px; font-size: 0.85em; overflow-x: auto;">Nume,Ingrediente,Proteina
+Pasta cu pesto,paste|pesto|brânză|ulei,ouă
+Salată Cezar,salată|cezar dressing|pâine,ouă</pre>
+                </div>
+
+                <div class="profile-section">
+                    <h3>Alege fișier CSV:</h3>
+                    <input type="file" id="csvFile" accept=".csv" style="padding: 10px 12px; border: 1px solid #d5d5d7; border-radius: 8px; width: 100%; cursor: pointer;">
+                </div>
+
+                <div id="importError" style="display: none; background: #fee; color: #d70015; padding: 15px; border-radius: 8px; margin-bottom: 15px;"></div>
+
+                <div id="importPreview" style="display: none; margin-bottom: 20px;">
+                    <h3>Preview (primele 3 rețete):</h3>
+                    <div id="importPreviewContent" style="background: #f5f5f7; padding: 15px; border-radius: 8px;"></div>
+                </div>
+
+                <div class="profile-buttons">
+                    <button onclick="parseAndPreviewCSV()">👁️ Preview Import</button>
+                    <button onclick="importRecipesFromCSV()" style="background: #34c759;">✅ Importă Rețetele</button>
+                </div>
+
+                <div id="importStats" style="display: none; margin-top: 20px; padding: 15px; background: #efe; border-radius: 8px;"></div>
+            </div>
+        </div>
+
+        <!-- Tab 5: Statistici -->
+        <div id="analytics-tab" style="display: none;">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>📊 Statistici Rețete</h2>
+                    <p>Analiza utilizării rețetelor</p>
+                </div>
+
+                <div id="analyticsContent">
+                    <div class="profile-section">
+                        <h3>Top 5 Rețete Preferate:</h3>
+                        <div id="topRecipes" style="background: #f5f5f7; padding: 15px; border-radius: 8px;"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Distribuție Proteine:</h3>
+                        <div id="proteinStats" style="background: #f5f5f7; padding: 15px; border-radius: 8px;"></div>
+                    </div>
+
+                    <div class="profile-section">
+                        <h3>Total Rețete:</h3>
+                        <div id="totalStats" style="background: #f5f5f7; padding: 15px; border-radius: 8px; font-size: 1.2em; font-weight: bold;"></div>
+                    </div>
+
+                    <button onclick="resetAnalytics()" style="background: #d70015; margin-top: 20px;">🔄 Reset Statistici</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tab 6: Calendar Planificare -->
+        <div id="calendar-tab" style="display: none;">
+            <div class="profile-container">
+                <div class="profile-header">
+                    <h2>📆 Planificator Meniuri</h2>
+                    <p>Planifică meniuri pe zilele viitoare</p>
+                </div>
+
+                <div class="profile-section">
+                    <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                        <button onclick="previousMonth()" style="padding: 8px 15px;" title="Mergi la luna anterioară">← Luna Anterioară</button>
+                        <div style="flex: 1; text-align: center; padding: 8px; font-weight: bold;" id="monthDisplay">Ian 2026</div>
+                        <button onclick="nextMonth()" style="padding: 8px 15px;" title="Mergi la luna următoare">Luna Următoare →</button>
+                    </div>
+                    <div id="calendarView" style="background: #f5f5f7; padding: 15px; border-radius: 8px;"></div>
+                </div>
+
+                <div class="profile-section" id="selectedDateDiv"></div>
+
+                <div class="profile-section">
+                    <h3>📅 Zile Planificate:</h3>
+                    <div id="plannedDaysList" style="background: #f5f5f7; padding: 15px; border-radius: 8px; max-height: 300px; overflow-y: auto;"></div>
+                </div>
+
+                <div class="profile-buttons">
+                    <button onclick="exportCalendarToPDF()" style="background: #34c759;" title="Exportă planul calendarului în PDF">📄 Export Calendar PDF</button>
+                    <button onclick="clearAllPlans()" style="background: #d70015;" title="Șterge toate planurile din calendar">🗑️ Șterge Planuri</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -997,6 +1383,414 @@
         let expandedCard = null;
         let shoppingList = {};
         let previousMenuRecipes = new Set(); // Tracker pentru rețete afișate anterior
+
+        // Global auth state
+        let currentUser = null;
+        let currentToken = null;
+        let userPreferences = {
+            dietType: 'balanced',
+            allergies: [],
+            restrictions: [],
+            language: 'ro'
+        };
+
+        // Auth Functions
+        function toggleLoginModal() {
+            const modal = document.getElementById('authModal');
+            modal.classList.toggle('active');
+        }
+
+        function switchAuthMode(mode) {
+            const loginForm = document.getElementById('loginForm');
+            const registerForm = document.getElementById('registerForm');
+            const error = document.getElementById('authError');
+            error.classList.remove('active');
+            
+            if (mode === 'login') {
+                loginForm.style.display = 'block';
+                registerForm.style.display = 'none';
+            } else {
+                loginForm.style.display = 'none';
+                registerForm.style.display = 'block';
+            }
+        }
+
+        async function handleLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const error = document.getElementById('authError');
+
+            if (!email || !password) {
+                error.textContent = 'Email și parolă sunt obligatorii';
+                error.classList.add('active');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    error.textContent = data.error || 'Eroare la conectare';
+                    error.classList.add('active');
+                    return;
+                }
+
+                currentToken = data.token;
+                currentUser = { email: data.email, userId: data.userId };
+                userPreferences = data.preferences;
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                updateUserUI();
+                toggleLoginModal();
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                error.classList.remove('active');
+
+            } catch (err) {
+                error.textContent = 'Eroare la conectare: ' + err.message;
+                error.classList.add('active');
+            }
+        }
+
+        async function handleRegister() {
+            const email = document.getElementById('registerEmail').value;
+            const password = document.getElementById('registerPassword').value;
+            const password2 = document.getElementById('registerPassword2').value;
+            const error = document.getElementById('authError');
+
+            if (!email || !password || !password2) {
+                error.textContent = 'Completează toate câmpurile';
+                error.classList.add('active');
+                return;
+            }
+
+            if (password !== password2) {
+                error.textContent = 'Parolele nu se potrivesc';
+                error.classList.add('active');
+                return;
+            }
+
+            if (password.length < 6) {
+                error.textContent = 'Parola trebuie să aibă cel puțin 6 caractere';
+                error.classList.add('active');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    error.textContent = data.error || 'Eroare la înregistrare';
+                    error.classList.add('active');
+                    return;
+                }
+
+                currentToken = data.token;
+                currentUser = { email: data.email, userId: data.userId };
+                userPreferences = data.preferences;
+                localStorage.setItem('authToken', data.token);
+                localStorage.setItem('currentUser', JSON.stringify(currentUser));
+
+                updateUserUI();
+                toggleLoginModal();
+                document.getElementById('registerEmail').value = '';
+                document.getElementById('registerPassword').value = '';
+                document.getElementById('registerPassword2').value = '';
+                error.classList.remove('active');
+                switchAuthMode('login');
+
+            } catch (err) {
+                error.textContent = 'Eroare la înregistrare: ' + err.message;
+                error.classList.add('active');
+            }
+        }
+
+        function logout() {
+            if (confirm('Ești sigur că vrei să te deconectezi?')) {
+                currentUser = null;
+                currentToken = null;
+                userPreferences = { dietType: 'balanced', allergies: [], restrictions: [], language: 'ro' };
+                localStorage.removeItem('authToken');
+                localStorage.removeItem('currentUser');
+                updateUserUI();
+                switchTab('menu');
+            }
+        }
+
+        function updateUserUI() {
+            const userButton = document.getElementById('userButton');
+            const profileTabBtn = document.getElementById('profileTabBtn');
+
+            if (currentUser) {
+                userButton.textContent = `👤 ${currentUser.email.split('@')[0]}`;
+                userButton.style.color = '#1d1d1f';
+                userButton.style.borderColor = '#d5d5d7';
+                profileTabBtn.style.display = 'block';
+                updateProfilePage();
+            } else {
+                userButton.textContent = '👤 Login';
+                userButton.style.color = '#0071e3';
+                userButton.style.borderColor = '#0071e3';
+                profileTabBtn.style.display = 'none';
+            }
+        }
+
+        function updateProfilePage() {
+            document.getElementById('profileName').textContent = `👤 ${currentUser.email}`;
+            document.getElementById('profileEmail').textContent = currentUser.email;
+            
+            document.querySelectorAll('.diet-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            document.querySelectorAll('.diet-option').forEach(option => {
+                const optionText = option.textContent.toLowerCase();
+                const dietType = userPreferences.dietType.toLowerCase();
+                if ((dietType === 'balanced' && optionText.includes('echilibrat')) ||
+                    (dietType === 'vegetarian' && optionText.includes('vegetarian')) ||
+                    (dietType === 'vegan' && optionText.includes('vegan')) ||
+                    (dietType === 'keto' && optionText.includes('keto'))) {
+                    option.classList.add('selected');
+                }
+            });
+
+            renderAllergies();
+            document.getElementById('profileLanguage').value = currentLang;
+        }
+
+        function selectDiet(dietType) {
+            userPreferences.dietType = dietType;
+            document.querySelectorAll('.diet-option').forEach(option => {
+                option.classList.remove('selected');
+            });
+            event.target.classList.add('selected');
+        }
+
+        function addAllergy() {
+            const input = document.getElementById('allergyInput');
+            const allergy = input.value.trim();
+            if (allergy && !userPreferences.allergies.includes(allergy)) {
+                userPreferences.allergies.push(allergy);
+                input.value = '';
+                renderAllergies();
+            }
+        }
+
+        function removeAllergy(allergy) {
+            userPreferences.allergies = userPreferences.allergies.filter(a => a !== allergy);
+            renderAllergies();
+        }
+
+        function renderAllergies() {
+            const allergyList = document.getElementById('allergyList');
+            allergyList.innerHTML = userPreferences.allergies.map(allergy => 
+                `<div class="allergy-tag">${allergy} <span class="remove" onclick="removeAllergy('${allergy}')">✕</span></div>`
+            ).join('');
+        }
+
+        function updateLanguagePref(lang) {
+            userPreferences.language = lang;
+        }
+
+        async function savePreferences() {
+            if (!currentToken) {
+                alert('Trebuie să fii conectat');
+                return;
+            }
+
+            try {
+                const response = await fetch('/api/user/preferences', {
+                    method: 'PUT',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${currentToken}`
+                    },
+                    body: JSON.stringify(userPreferences)
+                });
+
+                const data = await response.json();
+
+                if (!response.ok) {
+                    alert(data.error || 'Eroare la salvare');
+                    return;
+                }
+
+                alert('Preferințele au fost salvate cu succes!');
+                userPreferences = data.preferences;
+            } catch (err) {
+                alert('Eroare: ' + err.message);
+            }
+        }
+
+        function checkAuthStatus() {
+            const token = localStorage.getItem('authToken');
+            const user = localStorage.getItem('currentUser');
+            
+            if (token && user) {
+                currentToken = token;
+                currentUser = JSON.parse(user);
+                updateUserUI();
+            }
+        }
+
+        checkAuthStatus();
+
+        // Analytics state
+        let recipeUsageStats = JSON.parse(localStorage.getItem('recipeStats')) || {};
+        let csvRecipes = JSON.parse(localStorage.getItem('csvRecipes')) || [];
+        let selectedCSVData = null;
+
+        function parseAndPreviewCSV() {
+            const fileInput = document.getElementById('csvFile');
+            const file = fileInput.files[0];
+            const errorDiv = document.getElementById('importError');
+            const previewDiv = document.getElementById('importPreview');
+            const previewContent = document.getElementById('importPreviewContent');
+
+            errorDiv.style.display = 'none';
+            previewDiv.style.display = 'none';
+
+            if (!file) {
+                errorDiv.textContent = 'Te rog selectează un fișier CSV';
+                errorDiv.style.display = 'block';
+                return;
+            }
+
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const csv = e.target.result;
+                    const lines = csv.split('\n').filter(line => line.trim());
+                    
+                    if (lines.length < 2) {
+                        errorDiv.textContent = 'Fișierul CSV trebuie să aibă cel puțin header + 1 rețetă';
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    const header = lines[0].split(',').map(h => h.trim());
+                    if (header[0] !== 'Nume' || header[1] !== 'Ingrediente' || header[2] !== 'Proteina') {
+                        errorDiv.textContent = 'Header CSV invalid. Trebuie: Nume,Ingrediente,Proteina';
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    const recipes = [];
+                    for (let i = 1; i < lines.length; i++) {
+                        const parts = lines[i].split(',').map(p => p.trim());
+                        if (parts.length >= 3 && parts[0]) {
+                            recipes.push({
+                                Nume: parts[0],
+                                Ingrediente: parts[1].split('|'),
+                                Proteina: parts[2]
+                            });
+                        }
+                    }
+
+                    if (recipes.length === 0) {
+                        errorDiv.textContent = 'Nu s-au găsit rețete valide în CSV';
+                        errorDiv.style.display = 'block';
+                        return;
+                    }
+
+                    selectedCSVData = recipes;
+
+                    // Preview
+                    let previewHTML = `<p style="color: #86868b; margin-bottom: 15px;">Total rețete în fișier: ${recipes.length}</p>`;
+                    recipes.slice(0, 3).forEach(recipe => {
+                        previewHTML += `
+                            <div style="padding: 10px; border-bottom: 1px solid #e5e5e7;">
+                                <strong>${recipe.Nume}</strong><br>
+                                <small style="color: #86868b;">Proteina: ${recipe.Proteina}</small><br>
+                                <small>${recipe.Ingrediente.join(', ')}</small>
+                            </div>
+                        `;
+                    });
+                    
+                    previewContent.innerHTML = previewHTML;
+                    previewDiv.style.display = 'block';
+
+                } catch (error) {
+                    errorDiv.textContent = 'Eroare la parsare CSV: ' + error.message;
+                    errorDiv.style.display = 'block';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function importRecipesFromCSV() {
+            if (!selectedCSVData || selectedCSVData.length === 0) {
+                alert('Te rog fă preview mai întâi');
+                return;
+            }
+
+            csvRecipes = [...csvRecipes, ...selectedCSVData];
+            localStorage.setItem('csvRecipes', JSON.stringify(csvRecipes));
+
+            const statsDiv = document.getElementById('importStats');
+            statsDiv.innerHTML = `✅ ${selectedCSVData.length} rețete importate cu succes!<br>Total rețete în bază: ${csvRecipes.length}`;
+            statsDiv.style.display = 'block';
+
+            // Reset form
+            document.getElementById('csvFile').value = '';
+            selectedCSVData = null;
+            document.getElementById('importPreview').style.display = 'none';
+        }
+
+        function trackRecipeUsage(recipeName) {
+            if (!recipeName || recipeName === 'Nicio rețetă disponibilă') return;
+            
+            recipeUsageStats[recipeName] = (recipeUsageStats[recipeName] || 0) + 1;
+            localStorage.setItem('recipeStats', JSON.stringify(recipeUsageStats));
+        }
+
+        function loadAnalytics() {
+            const topRecipesDiv = document.getElementById('topRecipes');
+            const proteinStatsDiv = document.getElementById('proteinStats');
+            const totalStatsDiv = document.getElementById('totalStats');
+
+            // Top 5 rețete
+            const sorted = Object.entries(recipeUsageStats)
+                .sort((a, b) => b[1] - a[1])
+                .slice(0, 5);
+
+            if (sorted.length === 0) {
+                topRecipesDiv.innerHTML = '<p style="color: #86868b;">Nicio rețetă încă. Generează meniuri pentru a vedea statistici.</p>';
+            } else {
+                topRecipesDiv.innerHTML = sorted.map((entry, idx) => 
+                    `<div style="padding: 10px; ${idx % 2 === 0 ? 'background: white' : 'background: #fafafa'}">
+                        ${idx + 1}. <strong>${entry[0]}</strong> - ${entry[1]} ori
+                    </div>`
+                ).join('');
+            }
+
+            // Distribuție proteine
+            proteinStatsDiv.innerHTML = `<p style="color: #86868b;">Statistici detaliate în lucru...</p>`;
+
+            // Total
+            const totalRecipes = 18 + csvRecipes.length;
+            totalStatsDiv.innerHTML = `${totalRecipes} rețete disponibile | ${Object.keys(recipeUsageStats).length} utilizate`;
+        }
+
+        function resetAnalytics() {
+            if (confirm('Ștergi toate statisticile?')) {
+                recipeUsageStats = {};
+                localStorage.removeItem('recipeStats');
+                loadAnalytics();
+            }
+        }
 
         function setLanguage(lang) {
             currentLang = lang;
@@ -1586,15 +2380,34 @@
             // Ascunde toate taburile
             document.getElementById('menu-tab').style.display = 'none';
             document.getElementById('shopping-tab').style.display = 'none';
+            document.getElementById('profile-tab').style.display = 'none';
+            document.getElementById('import-tab').style.display = 'none';
+            document.getElementById('analytics-tab').style.display = 'none';
+            document.getElementById('calendar-tab').style.display = 'none';
 
             // Afișează tabul selectat
             if (tab === 'menu') {
                 document.getElementById('menu-tab').style.display = 'block';
-            } else {
+            } else if (tab === 'shopping') {
                 document.getElementById('shopping-tab').style.display = 'block';
                 loadShoppingList();
                 renderShoppingList();
                 populateCategorySelect();
+            } else if (tab === 'profile') {
+                if (!currentUser) {
+                    alert('Trebuie să fii conectat pentru a accesa profilul');
+                    return;
+                }
+                document.getElementById('profile-tab').style.display = 'block';
+                updateProfilePage();
+            } else if (tab === 'import') {
+                document.getElementById('import-tab').style.display = 'block';
+            } else if (tab === 'analytics') {
+                document.getElementById('analytics-tab').style.display = 'block';
+                loadAnalytics();
+            } else if (tab === 'calendar') {
+                document.getElementById('calendar-tab').style.display = 'block';
+                renderCalendar();
             }
 
             // Actualizează tab buttons
@@ -1650,18 +2463,31 @@
                 const recipesResponse = await fetch('/api/recipes');
                 const recipes = await recipesResponse.json();
                 
+                // Combine API recipes with CSV recipes
+                const allRecipes = [...recipes, ...csvRecipes];
+                
                 recipesData = {};
-                recipes.forEach(recipe => {
+                allRecipes.forEach(recipe => {
                     recipesData[recipe.Nume] = recipe.Ingrediente;
                 });
 
                 // Generate menu locally with exclusion of previous recipes
-                const menu = generateLocalMenu(recipes);
+                const menu = generateLocalMenu(allRecipes);
                 
-                // Update previousMenuRecipes tracker
+                // Verifică dacă a fost o eroare din filtrare
+                if (menu.error) {
+                    menuGrid.innerHTML = `<p style="color: #d70015; text-align: center; padding: 40px 20px; font-size: 1.1em;">⚠️ ${menu.error}</p>`;
+                    menuContainer.classList.add('active');
+                    loading.classList.remove('active');
+                    generateBtn.disabled = false;
+                    return;
+                }
+                
+                // Update previousMenuRecipes tracker & track usage
                 previousMenuRecipes.clear();
                 for (let day = 1; day <= 7; day++) {
                     previousMenuRecipes.add(menu[day]);
+                    trackRecipeUsage(menu[day]); // Track for analytics
                 }
 
                 let menuHTML = '';
@@ -1695,10 +2521,12 @@
 
                 menuGrid.innerHTML = menuHTML;
                 menuContainer.classList.add('active');
+                document.getElementById('exportMenuBtn').style.display = 'inline-block'; // Arată butonul Export
             } catch (error) {
                 console.error('Eroare:', error);
                 menuGrid.innerHTML = '<p style="color: #d84315; text-align: center; padding: 20px;">❌ Eroare la generarea meniului. Încearcă din nou!</p>';
                 menuContainer.classList.add('active');
+                document.getElementById('exportMenuBtn').style.display = 'none'; // Ascunde butonul Export
             } finally {
                 loading.classList.remove('active');
                 generateBtn.disabled = false;
@@ -1706,7 +2534,67 @@
         }
 
         // Generează meniu local cu exclusion de rețete anterioare
+        // Helper: filtrează rețetele pe baza dietei și alergiilor
+        function filterRecipesByPreferences(recipes) {
+            if (!currentUser) {
+                return recipes; // Nu filtram dacă nu e conectat
+            }
+
+            return recipes.filter(recipe => {
+                const proteinType = recipe.Proteina.toLowerCase();
+                const ingredientText = (recipe.Ingrediente.join(' ') + ' ' + recipe.Nume).toLowerCase();
+
+                // Filtrare pe dietă
+                if (userPreferences.dietType === 'vegetarian') {
+                    if (proteinType.includes('carne roșie') || 
+                        proteinType.includes('carne de pasare') || 
+                        proteinType.includes('pește') ||
+                        proteinType.includes('mezeluri')) {
+                        return false;
+                    }
+                }
+
+                if (userPreferences.dietType === 'vegan') {
+                    if (proteinType.includes('carne') || 
+                        proteinType.includes('pește') ||
+                        proteinType.includes('mezeluri') ||
+                        proteinType.includes('ouă') ||
+                        ingredientText.includes('lapte') ||
+                        ingredientText.includes('ouă') ||
+                        ingredientText.includes('smântână') ||
+                        ingredientText.includes('brânză') ||
+                        ingredientText.includes('unt')) {
+                        return false;
+                    }
+                }
+
+                if (userPreferences.dietType === 'keto') {
+                    // Keto: exclude carbs (orez, paste, cartofi, pâine, etc)
+                    const highCarbIngredients = ['orez', 'paste', 'cartof', 'couscous', 'pâine', 'grâu', 'mazare', 'fasole', 'dovleac'];
+                    if (highCarbIngredients.some(carb => ingredientText.includes(carb))) {
+                        return false;
+                    }
+                }
+
+                // Filtrare pe alergii
+                for (const allergy of userPreferences.allergies) {
+                    if (ingredientText.includes(allergy.toLowerCase())) {
+                        return false;
+                    }
+                }
+
+                return true;
+            });
+        }
+
         function generateLocalMenu(retete) {
+            // Filtrează rețetele pe baza preferințelor utilizatorului
+            const filteredRecipes = filterRecipesByPreferences(retete);
+
+            if (filteredRecipes.length === 0) {
+                return { error: 'Nu sunt rețete disponibile pentru preferințele tale. Încearcă să schimbi dieta sau alergiile.' };
+            }
+
             const freqLimits = {
                 'carne roșie': 2,
                 'carne de pasare': 2,
@@ -1723,7 +2611,7 @@
 
             for (let day = 1; day <= 7; day++) {
                 // Filtrează rețete disponibile (exclude cele utilizate anterior)
-                const available = retete.filter(r => 
+                const available = filteredRecipes.filter(r => 
                     !usedRecipes.has(r.Nume) && canUseRecipe(r, counters, freqLimits)
                 );
 
@@ -1757,6 +2645,202 @@
                 }
             }
             return true;
+        }
+
+        // Export Menu to PDF
+        function exportMenuToPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+                let yPosition = 20;
+                const pageHeight = doc.internal.pageSize.height;
+                const margins = 20;
+                const maxWidth = doc.internal.pageSize.width - (2 * margins);
+
+                // Header
+                doc.setFontSize(20);
+                doc.text('🍽️ MENU SĂPTĂMÂNAL', margins, yPosition);
+                yPosition += 12;
+
+                // Date info
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                const today = new Date().toLocaleDateString('ro-RO', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                doc.text(`Generat pe: ${today}`, margins, yPosition);
+                yPosition += 8;
+
+                // User info if logged in
+                if (currentUser) {
+                    doc.setFontSize(10);
+                    doc.text(`Utilizator: ${currentUser.email}`, margins, yPosition);
+                    yPosition += 5;
+                    if (userPreferences.dietType !== 'balanced') {
+                        doc.text(`Dietă: ${userPreferences.dietType}`, margins, yPosition);
+                        yPosition += 5;
+                    }
+                    if (userPreferences.allergies.length > 0) {
+                        doc.text(`Alergii: ${userPreferences.allergies.join(', ')}`, margins, yPosition);
+                        yPosition += 5;
+                    }
+                }
+
+                yPosition += 8;
+                doc.setDrawColor(200, 200, 200);
+                doc.line(margins, yPosition, doc.internal.pageSize.width - margins, yPosition);
+                yPosition += 10;
+
+                // Menu items
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+
+                const menuGrid = document.getElementById('menuGrid');
+                const dayCards = menuGrid.querySelectorAll('.day-card');
+
+                dayCards.forEach((card, index) => {
+                    const dayNumber = card.querySelector('.day-number').textContent;
+                    const recipeName = card.querySelector('.recipe-name span').textContent;
+                    const ingredientsList = card.querySelectorAll('.ingredients-list li');
+                    const ingredients = Array.from(ingredientsList).map(li => li.textContent).join(', ');
+
+                    // Check if we need a new page
+                    if (yPosition > pageHeight - 60) {
+                        doc.addPage();
+                        yPosition = margins;
+                    }
+
+                    // Day header
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'bold');
+                    doc.text(`${dayNumber}`, margins, yPosition);
+                    yPosition += 7;
+
+                    // Recipe name
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(10);
+                    const recipeLines = doc.splitTextToSize(recipeName, maxWidth - 10);
+                    doc.text(recipeLines, margins + 5, yPosition);
+                    yPosition += (recipeLines.length * 5) + 2;
+
+                    // Ingredients
+                    doc.setFontSize(9);
+                    doc.setTextColor(100, 100, 100);
+                    const ingredientLines = doc.splitTextToSize(ingredients, maxWidth - 10);
+                    doc.text(ingredientLines, margins + 5, yPosition);
+                    yPosition += (ingredientLines.length * 4) + 5;
+
+                    doc.setTextColor(0, 0, 0);
+                });
+
+                // Save PDF
+                doc.save(`meniu-${new Date().toISOString().split('T')[0]}.pdf`);
+            } catch (error) {
+                console.error('Error exporting PDF:', error);
+                alert('Eroare la export PDF. Verifică consola pentru detalii.');
+            }
+        }
+
+        // Export Shopping List to PDF
+        function exportShoppingListToPDF() {
+            try {
+                const { jsPDF } = window.jspdf;
+                const doc = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+
+                let yPosition = 20;
+                const pageHeight = doc.internal.pageSize.height;
+                const margins = 20;
+                const maxWidth = doc.internal.pageSize.width - (2 * margins);
+
+                // Header
+                doc.setFontSize(20);
+                doc.text('🛒 LISTA DE CUMPĂRĂTURI', margins, yPosition);
+                yPosition += 12;
+
+                // Date info
+                doc.setFontSize(10);
+                doc.setTextColor(100, 100, 100);
+                const today = new Date().toLocaleDateString('ro-RO', { 
+                    weekday: 'long', 
+                    year: 'numeric', 
+                    month: 'long', 
+                    day: 'numeric' 
+                });
+                doc.text(`Generat pe: ${today}`, margins, yPosition);
+                yPosition += 8;
+
+                // Statistics
+                const totalItems = Object.values(shoppingList).reduce((sum, cat) => sum + Object.keys(cat).length, 0);
+                const checkedItems = Object.values(shoppingList).reduce((sum, cat) => {
+                    return sum + Object.values(cat).filter(item => {
+                        return typeof item === 'object' ? item.checked : item;
+                    }).length;
+                }, 0);
+
+                doc.setFontSize(10);
+                doc.text(`Total: ${totalItems} produse | Cumpărate: ${checkedItems}`, margins, yPosition);
+                yPosition += 8;
+
+                doc.setDrawColor(200, 200, 200);
+                doc.line(margins, yPosition, doc.internal.pageSize.width - margins, yPosition);
+                yPosition += 10;
+
+                // Items by category
+                doc.setFontSize(11);
+                doc.setTextColor(0, 0, 0);
+
+                for (const [category, items] of Object.entries(shoppingList)) {
+                    // Check page break
+                    if (yPosition > pageHeight - 40) {
+                        doc.addPage();
+                        yPosition = margins;
+                    }
+
+                    // Category header
+                    doc.setFontSize(11);
+                    doc.setFont(undefined, 'bold');
+                    doc.setTextColor(0, 113, 227); // Blue
+                    doc.text(category, margins, yPosition);
+                    yPosition += 8;
+
+                    doc.setFont(undefined, 'normal');
+                    doc.setFontSize(10);
+                    doc.setTextColor(0, 0, 0);
+
+                    // Items
+                    for (const [product, data] of Object.entries(items)) {
+                        const isChecked = typeof data === 'object' ? data.checked : data;
+                        const quantity = typeof data === 'object' ? data.quantity : 1;
+
+                        if (yPosition > pageHeight - 15) {
+                            doc.addPage();
+                            yPosition = margins;
+                        }
+
+                        // Checkbox symbol
+                        const checkMark = isChecked ? '☑️' : '☐';
+                        const textColor = isChecked ? [150, 150, 150] : [0, 0, 0];
+                        doc.setTextColor(...textColor);
+
+                        const itemText = `${checkMark} ${product} (x${quantity})`;
+                        const lines = doc.splitTextToSize(itemText, maxWidth - 10);
+                        doc.text(lines, margins + 5, yPosition);
+                        yPosition += (lines.length * 4) + 2;
+                    }
+
+                    yPosition += 4;
+                }
+
+                // Save PDF
+                doc.save(`lista-cumparaturi-${new Date().toISOString().split('T')[0]}.pdf`);
+            } catch (error) {
+                console.error('Error exporting PDF:', error);
+                alert('Eroare la export PDF. Verifică consola pentru detalii.');
+            }
         }
 
         // Generează ID unic pentru partajare
@@ -1874,6 +2958,195 @@
             updateStats();
             renderShoppingList();
             syncWithServer();  // Sincronizează imediat!
+        }
+
+        // CALENDAR FUNCTIONS
+        let currentMonth = new Date();
+        let calendarPlans = JSON.parse(localStorage.getItem('calendarPlans')) || {};
+
+        function previousMonth() {
+            currentMonth.setMonth(currentMonth.getMonth() - 1);
+            renderCalendar();
+        }
+
+        function nextMonth() {
+            currentMonth.setMonth(currentMonth.getMonth() + 1);
+            renderCalendar();
+        }
+
+        function renderCalendar() {
+            const year = currentMonth.getFullYear();
+            const month = currentMonth.getMonth();
+            
+            // Setează display al lunii
+            const monthNames = ['Ianuarie', 'februarie', 'Martie', 'Aprilie', 'Mai', 'Iunie', 
+                               'Iulie', 'August', 'Septembrie', 'Octombrie', 'Noiembrie', 'Decembrie'];
+            document.getElementById('monthDisplay').textContent = monthNames[month] + ' ' + year;
+
+            // Obține prima zi a lunii și numărul de zile
+            const firstDay = new Date(year, month, 1).getDay();
+            const daysInMonth = new Date(year, month + 1, 0).getDate();
+
+            // Crează grid-ul calendarului
+            let html = '<div style="display: grid; grid-template-columns: repeat(7, 1fr); gap: 5px; margin: 15px 0;">';
+            const dayNames = ['Dum', 'Lun', 'Mar', 'Mie', 'Joi', 'Vin', 'Sâm'];
+            
+            // Afișează header-ul zilelor
+            dayNames.forEach(day => {
+                html += `<div style="text-align: center; font-weight: bold; font-size: 12px; padding: 8px; color: #666;">${day}</div>`;
+            });
+
+            // Adaugă zile goale la început
+            for (let i = 0; i < firstDay; i++) {
+                html += '<div></div>';
+            }
+
+            // Adaugă zilele lunii
+            const today = new Date();
+            for (let day = 1; day <= daysInMonth; day++) {
+                const dateStr = `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+                const isToday = year === today.getFullYear() && month === today.getMonth() && day === today.getDate();
+                const hasPlan = calendarPlans[dateStr];
+                
+                let dayStyle = `padding: 10px; text-align: center; cursor: pointer; border-radius: 6px; 
+                               background: ${isToday ? '#0071e3' : hasPlan ? '#e5f0ff' : '#f5f5f7'};
+                               color: ${isToday ? '#fff' : '#1d1d1f'}; font-weight: ${hasPlan ? 'bold' : 'normal'};`;
+                
+                html += `<div style="${dayStyle}" onclick="selectDate('${dateStr}')" role="button" tabindex="0" 
+                               onkeypress="if(event.key==='Enter') selectDate('${dateStr}')">${day}</div>`;
+            }
+            html += '</div>';
+
+            document.getElementById('calendarView').innerHTML = html;
+
+            // Afișează zilele planificate
+            let plannedHtml = '<div style="margin-top: 20px;">';
+            const sortedDates = Object.keys(calendarPlans).sort();
+            if (sortedDates.length === 0) {
+                plannedHtml += '<p style="color: #666;">Nicio zi planificată.</p>';
+            } else {
+                sortedDates.forEach(dateStr => {
+                    const recipes = calendarPlans[dateStr];
+                    plannedHtml += `<div style="padding: 10px; margin-bottom: 8px; background: #f5f5f7; border-radius: 6px;">
+                                      <strong>${dateStr}</strong><br>`;
+                    recipes.forEach((recipe, idx) => {
+                        plannedHtml += `<div style="font-size: 13px; margin: 5px 0;">${recipe} 
+                                        <span onclick="removeRecipeFromDate('${dateStr}', ${idx})" 
+                                              style="color: #d70015; cursor: pointer; font-weight: bold;" 
+                                              role="button" tabindex="0" aria-label="Șterge rețetă">×</span></div>`;
+                    });
+                    plannedHtml += '</div>';
+                });
+            }
+            plannedHtml += '</div>';
+            document.getElementById('plannedDaysList').innerHTML = plannedHtml;
+        }
+
+        function selectDate(dateStr) {
+            const selectedDiv = document.getElementById('selectedDateDiv');
+            const existingRecipes = calendarPlans[dateStr] || [];
+            
+            let html = `<div style="padding: 15px; background: #fff; border-radius: 6px; margin-top: 15px;">
+                        <h3 id="selectedDateTitle">${dateStr}</h3>
+                        <label for="recipeSelectForDate">Selectează o rețetă:</label>
+                            <select id="recipeSelectForDate" aria-labelledby="selectedDateTitle" 
+                                    style="margin: 10px; padding: 8px; border-radius: 4px; border: 1px solid #d5d5d7;">
+                                <option value="">-- Alege --</option>`;
+            
+            const allRecipes = [...recipes, ...csvRecipes];
+            allRecipes.forEach(recipe => {
+                html += `<option value="${recipe.name}">${recipe.name}</option>`;
+            });
+            
+            html += `</select>
+                    <button onclick="assignRecipeToDate('${dateStr}')" 
+                            style="padding: 8px 15px; background: #0071e3; color: white; border: none; border-radius: 4px; cursor: pointer; margin: 10px;"
+                            aria-label="Adaugă rețetă pentru ${dateStr}">Adaugă</button>
+                    <p style="font-size: 13px; color: #666;">Rețete pentru această zi: ${existingRecipes.length}</p>
+                    </div>`;
+            
+            selectedDiv.innerHTML = html;
+        }
+
+        function assignRecipeToDate(dateStr) {
+            const select = document.getElementById('recipeSelectForDate');
+            const recipe = select.value;
+            
+            if (!recipe) {
+                alert('Selectează o rețetă');
+                return;
+            }
+
+            if (!calendarPlans[dateStr]) {
+                calendarPlans[dateStr] = [];
+            }
+            if (!calendarPlans[dateStr].includes(recipe)) {
+                calendarPlans[dateStr].push(recipe);
+            }
+
+            localStorage.setItem('calendarPlans', JSON.stringify(calendarPlans));
+            renderCalendar();
+            alert('Rețetă adăugată cu succes!');
+        }
+
+        function removeRecipeFromDate(dateStr, idx) {
+            if (calendarPlans[dateStr]) {
+                calendarPlans[dateStr].splice(idx, 1);
+                if (calendarPlans[dateStr].length === 0) {
+                    delete calendarPlans[dateStr];
+                }
+                localStorage.setItem('calendarPlans', JSON.stringify(calendarPlans));
+                renderCalendar();
+            }
+        }
+
+        function exportCalendarToPDF() {
+            const sortedDates = Object.keys(calendarPlans).sort();
+            if (sortedDates.length === 0) {
+                alert('Nicio zi planificată pentru export');
+                return;
+            }
+
+            const doc = new jsPDF();
+            let yPos = 20;
+
+            doc.setFontSize(18);
+            doc.text('Plan Calendar', 20, yPos);
+            yPos += 15;
+
+            doc.setFontSize(11);
+            sortedDates.forEach(dateStr => {
+                if (yPos > 270) {
+                    doc.addPage();
+                    yPos = 20;
+                }
+
+                doc.setFontSize(12);
+                doc.setTextColor(0, 113, 227);
+                doc.text(dateStr, 20, yPos);
+                yPos += 10;
+
+                doc.setFontSize(10);
+                doc.setTextColor(29, 29, 31);
+                calendarPlans[dateStr].forEach(recipe => {
+                    doc.text('• ' + recipe, 25, yPos);
+                    yPos += 7;
+                });
+
+                yPos += 5;
+            });
+
+            doc.save('calendar-plan.pdf');
+            alert('Calendar exportat ca PDF!');
+        }
+
+        function clearAllPlans() {
+            if (confirm('Ești sigur că vrei să ștergi toate planurile calendarului?')) {
+                calendarPlans = {};
+                localStorage.removeItem('calendarPlans');
+                renderCalendar();
+                alert('Toate planurile au fost șterse');
+            }
         }
 
         // PULL fresh data la fiecare 5 secunde (sincronizare multi-device)
